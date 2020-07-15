@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="../README.html">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<h1 class="libtitle">logrel_ifc.examples.arith</h1>
+
+<div class="code">
+<span class="id" title="keyword">From</span> <span class="id" title="var">iris.proofmode</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">tactics</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">IC.if_convergent.derived</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">IC_step_fupd</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">IC.if_convergent.derived.ni_logrel</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">IC_left</span> <span class="id" title="library">IC_right</span> <span class="id" title="library">ni_logrel_lemmas</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="library">IC_logrel_fupd</span> <span class="id" title="library">ni_logrel_fupd_lemmas</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">logrel_ifc.lambda_sec</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#"><span class="id" title="library">lattice</span></a> <a class="idref" href="logrel_ifc.lambda_sec.fundamental_binary.html#"><span class="id" title="library">fundamental_binary</span></a> <a class="idref" href="logrel_ifc.lambda_sec.notation.html#"><span class="id" title="library">notation</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Instance</span> <a name="tpSecurityLattice"><span class="id" title="instance">tpSecurityLattice</span></a> : <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#SecurityLattice"><span class="id" title="class">SecurityLattice</span></a> <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#tplabel"><span class="id" title="inductive">tplabel</span></a> := { <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#c10ada929d080848d9971226141e9482"><span class="id" title="method">ζ</span></a> := <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#L"><span class="id" title="constructor">L</span></a> }.<br/>
+<span class="id" title="keyword">Notation</span> <a name="H"><span class="id" title="abbreviation">H</span></a> := (<a class="idref" href="logrel_ifc.lambda_sec.types.html#LLabel"><span class="id" title="constructor">LLabel</span></a> <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#H"><span class="id" title="constructor">H</span></a>).<br/>
+<span class="id" title="keyword">Notation</span> <a name="L"><span class="id" title="abbreviation">L</span></a> := (<a class="idref" href="logrel_ifc.lambda_sec.types.html#LLabel"><span class="id" title="constructor">LLabel</span></a> <a class="idref" href="logrel_ifc.lambda_sec.lattice.html#L"><span class="id" title="constructor">L</span></a>).<br/>
+
+<br/>
+<span class="comment">(*&nbsp;This&nbsp;example&nbsp;is&nbsp;not&nbsp;syntactically&nbsp;well-typed&nbsp;as&nbsp;it&nbsp;relies&nbsp;on&nbsp;arithmetic<br/>
+&nbsp;&nbsp;&nbsp;facts&nbsp;for&nbsp;soundness.&nbsp;*)</span><br/>
+
+<br/>
+<span class="comment">(*&nbsp;λ&nbsp;x,&nbsp;x&nbsp;*&nbsp;0&nbsp;*)</span><br/>
+<span class="id" title="keyword">Definition</span> <a name="multZ"><span class="id" title="definition">multZ</span></a> : <a class="idref" href="logrel_ifc.lambda_sec.lang.html#lambda_sec.expr"><span class="id" title="inductive">expr</span></a> := (<a class="idref" href="logrel_ifc.lambda_sec.notation.html#0fb1e22f2793f49f83eb5e20431f9db2"><span class="id" title="notation">λ</span></a><a class="idref" href="logrel_ifc.lambda_sec.notation.html#0fb1e22f2793f49f83eb5e20431f9db2"><span class="id" title="notation">:</span></a> <a class="idref" href="logrel_ifc.lambda_sec.notation.html#081bdcbb4754018065d936dc8ff26bbf"><span class="id" title="notation">$</span></a>0 <a class="idref" href="logrel_ifc.lambda_sec.notation.html#da5221709ab13640970b110774ada169"><span class="id" title="notation">*</span></a> <a class="idref" href="logrel_ifc.lambda_sec.lang.html#a22548b050acc8060e7bcc32c1623488"><span class="id" title="notation">#</span></a>0)%<span class="id" title="var">E</span>.<br/>
+<span class="comment">(*&nbsp;...&nbsp;and&nbsp;type&nbsp;Nat&nbsp;@&nbsp;H&nbsp;-L-&gt;&nbsp;Nat&nbsp;@&nbsp;L&nbsp;*)</span><br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="related"><span class="id" title="section">related</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span> `{!<a class="idref" href="logrel_ifc.lambda_sec.rules_binary.html#secG"><span class="id" title="class">secG</span></a> <span class="id" title="var">Σ</span>}.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a name="multZ_related"><span class="id" title="lemma">multZ_related</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.1/stdlib//Coq.Lists.List.html#ae9a5e1034e143b218b09d8e454472bd"><span class="id" title="notation">[]</span></a> <a class="idref" href="logrel_ifc.lambda_sec.fundamental_binary.html#2ac2fe1e8c42cedadcc5cfe93725df09"><span class="id" title="notation">⊨</span></a> <a class="idref" href="logrel_ifc.examples.arith.html#multZ"><span class="id" title="definition">multZ</span></a> <a class="idref" href="logrel_ifc.lambda_sec.fundamental_binary.html#2ac2fe1e8c42cedadcc5cfe93725df09"><span class="id" title="notation">≤ₗ</span></a> <a class="idref" href="logrel_ifc.examples.arith.html#multZ"><span class="id" title="definition">multZ</span></a> <a class="idref" href="logrel_ifc.lambda_sec.fundamental_binary.html#2ac2fe1e8c42cedadcc5cfe93725df09"><span class="id" title="notation">:</span></a> <a class="idref" href="logrel_ifc.lambda_sec.notation.html#8b57b11be4275b47948f6caec264b70f"><span class="id" title="notation">(</span></a><a class="idref" href="logrel_ifc.lambda_sec.types.html#TArrow"><span class="id" title="constructor">TArrow</span></a> <a class="idref" href="logrel_ifc.examples.arith.html#L"><span class="id" title="abbreviation">L</span></a> (<a class="idref" href="logrel_ifc.lambda_sec.types.html#TNat"><span class="id" title="constructor">TNat</span></a> <a class="idref" href="logrel_ifc.lambda_sec.notation.html#8b57b11be4275b47948f6caec264b70f"><span class="id" title="notation">@</span></a> <a class="idref" href="logrel_ifc.examples.arith.html#H"><span class="id" title="abbreviation">H</span></a>) (<a class="idref" href="logrel_ifc.lambda_sec.types.html#TNat"><span class="id" title="constructor">TNat</span></a> <a class="idref" href="logrel_ifc.lambda_sec.notation.html#8b57b11be4275b47948f6caec264b70f"><span class="id" title="notation">@</span></a> <a class="idref" href="logrel_ifc.examples.arith.html#L"><span class="id" title="abbreviation">L</span></a>)<a class="idref" href="logrel_ifc.lambda_sec.notation.html#8b57b11be4275b47948f6caec264b70f"><span class="id" title="notation">)</span></a> <a class="idref" href="logrel_ifc.lambda_sec.notation.html#8b57b11be4275b47948f6caec264b70f"><span class="id" title="notation">@</span></a> <a class="idref" href="logrel_ifc.examples.arith.html#L"><span class="id" title="abbreviation">L</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iIntros</span> (????) "_" . <span class="id" title="tactic">rewrite</span> /<a class="idref" href="logrel_ifc.lambda_sec.logrel_binary.html#interp_expr"><span class="id" title="definition">interp_expr</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> (<span class="id" title="lemma">ic_value</span> <a class="idref" href="logrel_ifc.lambda_sec.rules_binary.html#ic_binary"><span class="id" title="definition">ic_binary</span></a>); <span class="id" title="var">umods</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> (<span class="id" title="lemma">ic_value</span> (<a class="idref" href="logrel_ifc.lambda_sec.rules_binary.html#ic_right"><span class="id" title="definition">ic_right</span></a>)); <span class="id" title="var">umods</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">uarrows</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">bool_decide_eq_true_2</span> //.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iModIntro</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="var">iSplit</span>; <span class="id" title="var">iModIntro</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="var">iIntros</span> (?). <span class="id" title="var">unats</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">bool_decide_eq_false_2</span> //.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iIntros</span> "[Hw1 Hw2]". <span class="id" title="tactic">rewrite</span> /<a class="idref" href="logrel_ifc.lambda_sec.logrel_binary.html#interp_expr"><span class="id" title="definition">interp_expr</span></a> /=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iDestruct</span> "Hw1" <span class="id" title="keyword">as</span> (<span class="id" title="var">n1</span>) "-&gt;".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iDestruct</span> "Hw2" <span class="id" title="keyword">as</span> (<span class="id" title="var">n2</span>) "-&gt;".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> <span class="id" title="lemma">ic_left_pure_step</span>; [<span class="id" title="var">done</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> <span class="id" title="lemma">ic_left_pure_step_index</span>; [<span class="id" title="var">done</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">asimpl</span>. <span class="id" title="var">iModIntro</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> <span class="id" title="lemma">ic_left_pure_step</span>; [<span class="id" title="var">done</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> <span class="id" title="lemma">ic_left_pure_step_index</span>; [<span class="id" title="var">done</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> /= !<a class="idref" href="http://coq.inria.fr/distrib/V8.11.1/stdlib//Coq.Numbers.Natural.Peano.NPeano.html#Nat.mul_0_r"><span class="id" title="lemma">Nat.mul_0_r</span></a>. <span class="id" title="var">iNext</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> (<span class="id" title="lemma">ic_value</span> <a class="idref" href="logrel_ifc.lambda_sec.rules_binary.html#ic_binary"><span class="id" title="definition">ic_binary</span></a>); <span class="id" title="var">umods</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iApply</span> (<span class="id" title="lemma">ic_value</span> <a class="idref" href="logrel_ifc.lambda_sec.rules_binary.html#ic_right"><span class="id" title="definition">ic_right</span></a>); <span class="id" title="var">umods</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iModIntro</span>. <span class="id" title="var">unats</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">bool_decide_eq_true_2</span> //; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="var">iIntros</span> (?) "Hw1". <span class="id" title="var">unats</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iDestruct</span> "Hw1" <span class="id" title="keyword">as</span> (<span class="id" title="var">n1</span>) "-&gt;".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="var">iIntros</span> "%".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="var">iIntros</span> (?) "Hw1". <span class="id" title="var">unats</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">iDestruct</span> "Hw1" <span class="id" title="keyword">as</span> (<span class="id" title="var">n1</span>) "-&gt;".<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="var">iIntros</span> "%".<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="logrel_ifc.examples.arith.html#related"><span class="id" title="section">related</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/tebbi/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+-Q theories IC
+-arg -w -arg -notation-overridden,-redundant-canonical-projection,-several-object-files,-undeclared-scope,-convert_concl_no_check
+
+
+theories/prelude/reduction.v
+theories/prelude/base.v
+theories/future/future.v
+theories/if_convergent/IC.v
+theories/if_convergent/ICTriple.v
+theories/if_convergent/IC_adequacy.v
+theories/if_convergent/IC_lifting.v
+theories/if_convergent/derived/IC_fupd.v
+theories/if_convergent/derived/IC_step_fupd.v
+theories/if_convergent/derived/IC_future.v
+theories/if_convergent/derived/IC_bupd.v
+theories/if_convergent/derived/IC_id.v
+theories/if_convergent/derived/IC_laterN.v
+theories/if_convergent/derived/IC_indexed_step_fupd.v
+theories/if_convergent/derived/IC_IC_ISF.v
+theories/if_convergent/derived/ni_logrel/IC_right.v
+theories/if_convergent/derived/ni_logrel/IC_left.v
+theories/if_convergent/derived/ni_logrel/ni_logrel_lemmas.v
+theories/if_convergent/derived/ni_logrel/IC_logrel_fupd.v
+theories/if_convergent/derived/ni_logrel/ni_logrel_fupd_lemmas.v

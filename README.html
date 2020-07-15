@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <title>Mechanized Logical Relations for Termination-Insensitive Noninterference</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link href="html-if-convergent/coqdoc.css" rel="stylesheet" type="text/css" />
+    <link href="html-if-convergent/coqdocjs.css" rel="stylesheet" type="text/css"/>
+  </head>
+
+  <body onload="document.getElementById('content').focus()">
+    <div id="header">
+      <span class="left">
+        <span class="modulename"> <script> document.write(document.title) </script> </span>
+      </span>
+
+      <span class="button" id="toggle-proofs"></span>
+
+      <span class="right">
+        <a href="">Project Page</a>
+        <a href="html-if-convergent/indexpage.html"> Index (IC) </a>
+        <a href="html-if-convergent/toc.html"> Table of Contents (IC) </a>
+        <a href="html-logrel-ifc/indexpage.html"> Index (TINIRIS) </a>
+        <a href="html-logrel-ifc/toc.html"> Table of Contents (TINIRIS) </a>
+      </span>
+    </div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+      <div id="main">
+
+        <h1 id="an-overview-of-the-coq-formalization">An overview of the Coq formalization</h1>
+        <p>The development is known to compile with:</p>
+        <ul>
+          <li><code>coq</code>: version <code>8.11.1</code></li>
+          <li><code>coq-iris</code> : version <code>dev.2020-04-09.2.962637df</code></li>
+          <li><code>coq-stdpp</code> : version <code>dev.2020-04-03.1.eeef6250</code></li>
+          <li><code>coq-autosubst</code></li>
+          <li><code>coq-iris-string-ident</code></li>
+        </ul>
+        <p>To obtain the development versions, you have to add the following Coq opam repository:</p>
+        <pre><code>opam repo add iris-dev https:<span class="hljs-regexp">//</span>gitlab.mpi-sws.org<span class="hljs-regexp">/iris/opam.git</span>
+        </code></pre><p>Once you got opam set up, run <code>opam update</code> followed by <code>make build-dep</code> to
+          install the right versions of the dependencies.</p>
+        <p>Run <code>make -jN</code> to build the full development, where <code>N</code> is the number of your
+          CPU cores.</p>
+        <h2 id="modal-weakest-precondition-theory">Modal Weakest Precondition Theory</h2>
+        <p>The <em>Modal Weakest Precondition</em> theory is in our Coq formalization called
+          <em>If-Convergent</em> (IC).</p>
+        <ul>
+          <li>The general definition of the IC predicate (Definition 3.4) is defined in
+            <a href="html-if-convergent/IC.if_convergent.IC.html">IC.v</a>.</li>
+          <li>All general derived proof rules for program reasoning are defined in
+            <a href="html-if-convergent/IC.if_convergent.IC_lifting.html">IC_lifting.v</a>.</li>
+          <li>The adequacy statement is stated and proved in
+            <a href="html-if-convergent/IC.if_convergent.IC_adequacy.html">IC_adequacy.v</a>.</li>
+          <li>The example predicate (Example 3.1) is defined in <a href="html-if-convergent/IC.if_convergent.derived.IC_fupd.html">IC_fupd.v</a>.</li>
+          <li>The unary predicate (Example 3.2) used in our logical-relations model is
+            defined in
+            <a href="html-if-convergent/IC.if_convergent.derived.IC_step_fupd.html">IC_step_fupd.v</a>.</li>
+          <li>The binary predicate (Example 3.5) used in our logical-relations mode is
+            defined in
+            <a href="html-if-convergent/IC.if_convergent.derived.ni_logrel.IC_left.html">IC_left.v</a>;
+            the inner predicate in
+            <a href="html-if-convergent/IC.if_convergent.derived.ni_logrel.IC_right.html">IC_right.v</a></li>
+          <li>The binary predicate used in Section 5 is defined in
+            <a href="html-if-convergent/IC.if_convergent.derived.ni_logrel.IC_logrel_fupd.html">IC_logrel_fupd.v</a></li>
+          <li>Lemmas about the interactions between the unary and binary predicates
+            (e.g. Lemma 3.7 and Lemma 5.1) are found in
+            <a href="html-if-convergent/IC.if_convergent.derived.ni_logrel.ni_logrel_lemmas.html">ni_logrel_lemmas.v</a>
+            and
+            <a href="html-if-convergent/IC.if_convergent.derived.ni_logrel.ni_logrel_fupd_lemmas.html">ni_logrel_fupd_lemmas.v</a></li>
+        </ul>
+        <h2 id="noninterference-development">Noninterference Development</h2>
+        <ul>
+          <li>Our language of study is defined in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.lang.html">lang.v</a>.</li>
+          <li>The types and type system are defined in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.types.html">types.v</a> and
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.typing.html">typing.v</a>, respectively.</li>
+          <li>The unary logical relation is defined in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.logrel_unary.html">logrel_unary.v</a> and
+            its fundamental theorem is stated and proved in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.fundamental_unary.html">fundamental_unary.v</a>.</li>
+          <li>The binary logical relation is defined in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.logrel_binary.html">logrel_binary.v</a> and
+            its fundamental theorem is stated and proved in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.fundamental_binary.html">fundamental_binary.v</a>.</li>
+          <li>Termination-insensitive noninterference is proved in
+            <a href="html-logrel-ifc/logrel_ifc.lambda_sec.noninterference.html">noninterference.v</a>.</li>
+          <li>The introductory examples are found in
+            <a href="html-logrel-ifc/logrel_ifc.examples.arith.html">arith.v</a>,
+            <a href="html-logrel-ifc/logrel_ifc.examples.refs.html">refs.v</a>, and
+            <a href="html-logrel-ifc/logrel_ifc.examples.refs_implicit.html">refs_implicit.v</a>.</li>
+          <li>The example from Section 5.1 is found in
+            <a href="html-logrel-ifc/logrel_ifc.examples.report.html">report.v</a>.</li>
+          <li>The examples from Section 5.2 are found in
+            <a href="html-logrel-ifc/logrel_ifc.examples.value_dependent.html">value_dependent.v</a>
+            and
+            <a href="html-logrel-ifc/logrel_ifc.examples.value_dependent_pack.html">value_dependent_pack.v</a>.</li>
+          <li>The example from Section 5.3 is found in
+            <a href="html-logrel-ifc/logrel_ifc.examples.compute_with_cache.html">compute_with_cache.v</a>.</li>
+          <li>The parametricity theorems from Section 5.4 are shown in
+            <a href="html-logrel-ifc/logrel_ifc.examples.parametricity.html">parametricity.v</a>.</li>
+        </ul>
+
+      </div>
+    </div>
+</body>
+</html>
