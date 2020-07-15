@@ -41,25 +41,25 @@ The *Modal Weakest Precondition* theory is in our Coq formalization called
 *If-Convergent* (IC).
 
 - [Overview of the full development](html-if-convergent/toc.html).
-- The general definition of the IC predicate (Definition 3.4) is defined in
+- The general definition of the IC predicate (Definition 2.2.4) is defined in
   [IC.v](html-if-convergent/IC.if_convergent.IC.html).
 - All general derived proof rules for program reasoning are defined in
   [IC_lifting.v](html-if-convergent/IC.if_convergent.IC_lifting.html).
 - The adequacy statement is stated and proved in
   [IC_adequacy.v](html-if-convergent/IC.if_convergent.IC_adequacy.html).
-- The example predicate (Example 3.1) is defined in [IC_fupd.v](html-if-convergent/IC.if_convergent.derived.IC_fupd.html).
-- The unary predicate (Example 3.2) used in our logical-relations model is
+- The example predicate (Example 2.2.1) is defined in [IC_fupd.v](html-if-convergent/IC.if_convergent.derived.IC_fupd.html).
+- The unary predicate (Example 2.2.2) used in our logical-relations model is
   defined in
   [IC_step_fupd.v](html-if-convergent/IC.if_convergent.derived.IC_step_fupd.html).
-- The binary predicate (Example 3.5) used in our logical-relations mode is
+- The binary predicate (Example 2.2.5) used in our logical-relations mode is
   defined in
   [IC_left.v](html-if-convergent/IC.if_convergent.derived.ni_logrel.IC_left.html);
   the inner predicate in
   [IC_right.v](html-if-convergent/IC.if_convergent.derived.ni_logrel.IC_right.html)
-- The binary predicate used in Section 5 is defined in
+- The binary predicate used in Section 2.4 is defined in
   [IC_logrel_fupd.v](html-if-convergent/IC.if_convergent.derived.ni_logrel.IC_logrel_fupd.html)
 - Lemmas about the interactions between the unary and binary predicates
-  (e.g. Lemma 3.7 and Lemma 5.1) are found in
+  (e.g. Lemma 2.2.7 and Lemma 2.4.1) are found in
   [ni_logrel_lemmas.v](html-if-convergent/IC.if_convergent.derived.ni_logrel.ni_logrel_lemmas.html)
   and
   [ni_logrel_fupd_lemmas.v](html-if-convergent/IC.if_convergent.derived.ni_logrel.ni_logrel_fupd_lemmas.html)
@@ -86,13 +86,13 @@ The *Modal Weakest Precondition* theory is in our Coq formalization called
   [arith.v](html-logrel-ifc/logrel_ifc.examples.arith.html),
   [refs.v](html-logrel-ifc/logrel_ifc.examples.refs.html), and
   [refs_implicit.v](html-logrel-ifc/logrel_ifc.examples.refs_implicit.html).
-- The example from Section 5.1 is found in
+- The example from Section 2.4.1 is found in
   [report.v](html-logrel-ifc/logrel_ifc.examples.report.html).
-- The examples from Section 5.2 are found in
+- The examples from Section 2.4.2 are found in
   [value_dependent.v](html-logrel-ifc/logrel_ifc.examples.value_dependent.html)
   and
   [value_dependent_pack.v](html-logrel-ifc/logrel_ifc.examples.value_dependent_pack.html).
-- The example from Section 5.3 is found in
+- The example from Section 2.4.3 is found in
   [compute_with_cache.v](html-logrel-ifc/logrel_ifc.examples.compute_with_cache.html).
-- The parametricity theorems from Section 5.4 are shown in
+- The parametricity theorems from Section 2.4.4 are shown in
   [parametricity.v](html-logrel-ifc/logrel_ifc.examples.parametricity.html).
