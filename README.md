@@ -36,6 +36,8 @@ install the right versions of the dependencies.
 Run `make -jN` to build the full development, where `N` is the number of your
 CPU cores.
 
+Generate the Coqdoc HTML overview of the development by running `make html`.
+
 ## Modal Weakest Precondition Theory (HTML)
 The *Modal Weakest Precondition* theory is in our Coq formalization called
 *If-Convergent* (IC).
