@@ -15,7 +15,7 @@ Section ic_indexed_step_fupd.
        ICD_modality_index := [Prod nat];
        ICD_modality_bind_condition k k' f Ξ :=
          k = k' + (f tt) ∧ Ξ = λ _, id;
-       ICD_modality k E n Φ := (|={E, ∅}▷=>^k |={E}=> Φ tt)%I;
+       ICD_modality k E n Φ := (|={E}[∅]▷=>^k |={E}=> Φ tt)%I;
     |}.
 
   Global Instance ICC_indexed_step_fupd : ICC icd_indexed_step_fupd.
@@ -172,7 +172,7 @@ Section ic_indexed_step_fupd.
   Qed.
 
   Lemma ic_indexed_step_fupd_index_step_fupd k k' E e Φ :
-    (|={E, ∅}▷=>^k' IC@{icd_indexed_step_fupd, k } e @ E {{ Φ }})%I
+    (|={E}[∅]▷=>^k' IC@{icd_indexed_step_fupd, k } e @ E {{ Φ }})%I
     ⊢ IC@{icd_indexed_step_fupd, k' + k } e @ E {{ Φ }}.
   Proof.
     iIntros "H".
@@ -238,7 +238,7 @@ Lemma ic_indexed_step_fupd_lift_atomic_step idx E Φ e1 :
    (∀ σ1, ICD_SI σ1 ={E, ∅}=∗
         ∀ v2 σ2,
             ⌜prim_step e1 σ1 [] (of_val v2) σ2 []⌝
-             ={∅, E}=∗ (ICD_SI σ2 ∗ |={E,∅}▷=>^idx |={E}=> Φ v2 1))
+             ={∅, E}=∗ (ICD_SI σ2 ∗ |={E}[∅]▷=>^idx |={E}=> Φ v2 1))
     ⊢ IC@{icd_indexed_step_fupd ICD_SI, idx } e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   iIntros (??).
@@ -253,7 +253,7 @@ Lemma ic_indexed_step_fupd_lift_atomic_det_step idx E Φ e1 :
      (∃ v2 σ2,
          ⌜∀ e2' σ2', prim_step e1 σ1 [] e2' σ2' [] →
                      σ2 = σ2' ∧ to_val e2' = Some v2⌝ ∧
-                     |={∅, E}=> ICD_SI σ2 ∗ |={E,∅}▷=>^idx |={E}=> Φ v2 1))
+                     |={∅, E}=> ICD_SI σ2 ∗ |={E}[∅]▷=>^idx |={E}=> Φ v2 1))
     ⊢ IC@{icd_indexed_step_fupd ICD_SI, idx } e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   by iIntros (??);
@@ -342,7 +342,7 @@ Lemma ic_indexed_step_fupd_lift_atomic_head_step idx E Φ e1 :
    (∀ σ1, ICD_SI σ1 ={E, ∅}=∗
      ∀ v2 σ2,
        ⌜head_step e1 σ1 [] (of_val v2) σ2 []⌝ ={∅, E}=∗
-          (ICD_SI σ2 ∗ |={E,∅}▷=>^idx |={E}=> Φ v2 1))
+          (ICD_SI σ2 ∗ |={E}[∅]▷=>^idx |={E}=> Φ v2 1))
      ⊢ IC@{icd_indexed_step_fupd ICD_SI, idx } e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   by intros;
@@ -416,7 +416,7 @@ Lemma ic_indexed_step_fupd_lift_atomic_head_step' idx E Φ e1:
    (∀ σ1, ICD_SI σ1 ={E, ∅}=∗
       (∀ v2 σ2,
           ⌜head_step e1 σ1 [] (of_val v2) σ2 []⌝ ={∅, E}=∗
-           (ICD_SI σ2 ∗ |={E,∅}▷=>^idx |={E}=> Φ v2 1)))
+           (ICD_SI σ2 ∗ |={E}[∅]▷=>^idx |={E}=> Φ v2 1)))
     ⊢ IC@{icd_indexed_step_fupd ICD_SI, idx } e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   iIntros (???).
@@ -447,7 +447,7 @@ Typeclasses Transparent ICC_state_interp ICC_modality.
 Lemma ic_indexed_step_fupd_adequacy_basic idx E e σ Φ :
   ICD_SI σ ∗ IC@{icd_indexed_step_fupd ICD_SI, idx } e @ E {{ Φ }} -∗
     ∀ (rd : Reds e σ),
-      |={E,∅}▷=>^idx
+      |={E}[∅]▷=>^idx
         |={E}=> ICD_SI (end_state rd) ∗ Φ (end_val rd) (nstps rd) tt.
 Proof.
   iApply (ic_adequacy_basic (icd_indexed_step_fupd ICD_SI) idx E e σ Φ).

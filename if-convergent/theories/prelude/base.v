@@ -37,7 +37,7 @@ Section Lemmas.
 
   Implicit Types P Q : iProp Σ.
 
-  Lemma step_fupdN_intro k E P : P -∗ |={E, ∅}▷=>^k P.
+  Lemma step_fupdN_intro k E P : P -∗ |={E}[∅]▷=>^k P.
   Proof.
     iIntros "H".
     iInduction k as [] "IH"; simpl; first done.
@@ -46,7 +46,7 @@ Section Lemmas.
   Qed.
 
   Lemma step_fupdN_mask_mono k E1 E2 P :
-    E1 ⊆ E2 → (|={E1, ∅}▷=>^k P) -∗ |={E2, ∅}▷=>^k P.
+    E1 ⊆ E2 → (|={E1}[∅]▷=>^k P) -∗ |={E2}[∅]▷=>^k P.
   Proof.
     iIntros (?) "H".
     iInduction k as [] "IH"; simpl; first done.
@@ -57,7 +57,7 @@ Section Lemmas.
   Qed.
 
   Lemma step_fupdN_plus k k' E E' (P : iProp Σ) :
-    (|={E, E'}▷=>^k (|={E, E'}▷=>^k' P)) ⊣⊢ |={E, E'}▷=>^(k + k') P.
+    (|={E}[E']▷=>^k (|={E}[E']▷=>^k' P)) ⊣⊢ |={E}[E']▷=>^(k + k') P.
   Proof.
     iInduction k as [] "IHk" forall (k' P); simpl.
     - iInduction k' as [] "IHk'"; simpl; first by iSplit; auto.
@@ -83,12 +83,12 @@ Section Lemmas.
 
   Global Instance elim_modal_steps_fupd p E E' P Q k k':
     StepFupdElimCond k' k →
-    ElimModal True p false (|={E, E'}▷=>^k' P) P (|={E, E'}▷=>^k Q)
-              (|={E, E'}▷=>^(k - k') Q).
+    ElimModal True p false (|={E}[E']▷=>^k' P) P (|={E}[E']▷=>^k Q)
+              (|={E}[E']▷=>^(k - k') Q).
   Proof.
     rewrite /StepFupdElimCond.
     iIntros (Hk _) "[HP HQ]".
-    rewrite -{2}(Nat.sub_add k' k) // (comm _ _ k') -step_fupdN_plus.
+    rewrite -{2}(Nat.sub_add k' k) // plus_comm -step_fupdN_plus.
     iDestruct (bi.intuitionistically_if_elim with "HP") as "HP".
     iInduction k' as [|k'] "IH" forall (k Hk); simpl; first by iApply "HQ".
     iMod "HP"; iModIntro; iNext; iMod "HP"; iModIntro.
@@ -97,8 +97,8 @@ Section Lemmas.
   Qed.
 
   Global Instance elim_modal_fupd_steps_fupd_fupd p E E' P Q k :
-    ElimModal True p false (|={E}=> P) P (|={E, E'}▷=>^k |={E}=> Q)
-              (|={E, E'}▷=>^k |={E}=> Q).
+    ElimModal True p false (|={E}=> P) P (|={E}[E']▷=>^k |={E}=> Q)
+              (|={E}[E']▷=>^k |={E}=> Q).
   Proof.
     iIntros (_) "[HP HQ]".
     iDestruct (bi.intuitionistically_if_elim with "HP") as "HP".

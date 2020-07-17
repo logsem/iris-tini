@@ -107,8 +107,7 @@ Section logrel_un.
     interp Δ ρ : Contractive (interp_un_rec1 interp Δ ρ).
   Proof.
     rewrite /interp_un_rec1 /=. repeat intros ?.
-    do 4 f_equiv. apply bi.later_contractive.
-    destruct n as [|n]; [done|].
+    do 4 f_equiv. f_contractive.
     apply interp. f_equiv. by apply dist_later_dist.
   Qed.
 

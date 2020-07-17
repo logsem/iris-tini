@@ -154,8 +154,7 @@ Section logrel.
     Contractive (interp_rec1 interp τ Θ ρ).
   Proof.
     rewrite /interp_rec1. cbn. repeat intros ?.
-    do 4 f_equiv. apply bi.later_contractive.
-    destruct n as [|n]; [done|].
+    do 4 f_equiv. f_contractive.
     apply interp. do 2 f_equiv. by apply dist_later_dist.
   Qed.
 
@@ -499,9 +498,9 @@ Section logrel.
       + cbn. iDestruct "H" as "#[_ [? ?]]". auto.
       + cbn. iDestruct "H" as (τR τi1 τi2) "(% & % & % & [#Hsubsum #H])".
         iDestruct "H" as ([w1 w2]) "(-> & -> & Hτ)".
-        iDestruct (secbin_subsumes_secun with "[$]") as "[#? #?] /=". 
+        iDestruct (secbin_subsumes_secun with "[$]") as "[#? #?] /=".
         rewrite !interp_un_exist_def.
-        iSplit; iModIntro; [iExists τi1| iExists τi2]; eauto.          
+        iSplit; iModIntro; [iExists τi1| iExists τi2]; eauto.
       + change (fixpoint _) with (⟦ TRec τ ⟧ Θ ρ).
         iLöb as "IH" forall (vv) "H".
         rewrite {2}interp_rec_def fixpoint_interp_rec1_eq.

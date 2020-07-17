@@ -177,7 +177,7 @@ Section future_properties.
    Proper (dist n ==> dist n) (@future PROP _ E k).
  Proof.
    rewrite future_eq /future_def; induction k; simpl; first by solve_proper.
-   by intros P Q HPQ; apply fupd_ne, (contractive_ne _), IHk.
+   by intros P Q HPQ; apply fupd_ne, later_ne, IHk.
  Qed.
 
  Global Instance fupd_proper n E : Proper ((≡) ==> (≡)) (@future PROP _ E n).
@@ -312,8 +312,8 @@ Proof.
   intros P1 P2 HP Q1 Q2 HQ. by rewrite HP HQ -future_sep.
 Qed.
 
-Lemma embed_future {PROP' : sbi} `{!BiEmbed PROP PROP'} `{!SbiEmbed PROP PROP'}
-      `{!BiFUpd PROP'} `{!BiEmbedFUpd PROP PROP'} n E P :
+Lemma embed_future {PROP' : bi} `{!BiEmbed PROP PROP'} `{!BiFUpd PROP'}
+      `{!BiEmbedLater PROP PROP'} `{!BiEmbedFUpd PROP PROP'} n E P :
   ⎡|≫{E}=[n]=> P⎤ ⊣⊢@{PROP'} |≫{E}=[n]=> ⎡P⎤.
 Proof.
   induction n.
@@ -380,8 +380,8 @@ Section future_proofmode_classes.
   Global Instance is_except_0_future n E P : IsExcept0 (|≫{E}=[n]=> P).
   Proof. by rewrite /IsExcept0 except_0_future. Qed.
 
-  Global Instance add_modal_embed_fupd_goal {PROP' : sbi} `{!BiEmbed PROP PROP'}
-         `{!BiFUpd PROP'} `{!SbiEmbed PROP PROP'} `{!BiEmbedFUpd PROP PROP'}
+  Global Instance add_modal_embed_fupd_goal {PROP' : bi} `{!BiEmbed PROP PROP'}
+         `{!BiFUpd PROP'} `{!BiEmbedLater PROP PROP'} `{!BiEmbedFUpd PROP PROP'}
          n E (P P' : PROP') (Q : PROP) :
     AddModal P P' (|≫{E}=[n]=> ⎡Q⎤)%I → AddModal P P' ⎡|≫{E}=[n]=> Q⎤.
   Proof. by rewrite /AddModal; erewrite !embed_future. Qed.
@@ -404,16 +404,16 @@ Section future_proofmode_classes.
       fupd_frame_r wand_elim_r fupd_future_future.
   Qed.
 
-  Global Instance elim_modal_embed_future_goal {PROP' : sbi} `{!BiFUpd PROP'}
-         `{!BiEmbed PROP PROP'} `{!SbiEmbed PROP PROP'}
+  Global Instance elim_modal_embed_future_goal {PROP' : bi} `{!BiFUpd PROP'}
+         `{!BiEmbed PROP PROP'} `{!BiEmbedLater PROP PROP'}
          `{!BiEmbedFUpd PROP PROP'}
          n p p' φ E (P P' : PROP') (Q Q' : PROP) :
     ElimModal φ p p' P P' (|≫{E}=[n]=> ⎡Q⎤)%I (|≫{E}=[n]=> ⎡Q'⎤)%I →
     ElimModal φ p p' P P' ⎡|≫{E}=[n]=> Q⎤ ⎡|≫{E}=[n]=> Q'⎤.
   Proof. by rewrite /ElimModal !embed_future. Qed.
 
-  Global Instance elim_modal_embed_future_hyp {PROP' : sbi} `{!BiFUpd PROP'}
-         `{!BiEmbed PROP PROP'} `{!SbiEmbed PROP PROP'}
+  Global Instance elim_modal_embed_future_hyp {PROP' : bi} `{!BiFUpd PROP'}
+         `{!BiEmbed PROP PROP'} `{!BiEmbedLater PROP PROP'}
          `{!BiEmbedFUpd PROP PROP'}
          n p p' φ E (P : PROP) (P' Q Q' : PROP') :
     ElimModal φ p p' (|≫{E}=[n]=> ⎡P⎤)%I P' Q Q' →

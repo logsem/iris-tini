@@ -1,14 +1,3 @@
-EXTRA_DIR:=../extra
-COQDOCFLAGS:= \
-  --external 'http://ssr2.msr-inria.inria.fr/doc/ssreflect-1.5/' Ssreflect \
-  --external 'http://ssr2.msr-inria.inria.fr/doc/mathcomp-1.5/' MathComp \
-  --toc --toc-depth 2 --html --interpolate \
-  --index indexpage --no-lib-name --parse-comments \
-  --with-header $(EXTRA_DIR)/header.html --with-footer $(EXTRA_DIR)/footer.html
-export COQDOCFLAGS
-COQMAKEFILE:=Makefile.coq
-COQ_PROJ:=_CoqProject
-HTML_OUT:=../html-if-convergent
 # Forward most targets to Coq makefile (with some trick to make this phony)
 %: Makefile.coq phony
 	+@make -f Makefile.coq $@
@@ -22,12 +11,6 @@ clean: Makefile.coq
 	find theories $$(test -d tests && echo tests) \( -name "*.d" -o -name "*.vo" -o -name "*.aux" -o -name "*.cache" -o -name "*.glob" -o -name "*.vio" \) -print -delete
 	rm -f Makefile.coq
 .PHONY: clean
-
-html: all
-	rm -fr $(HTML_OUT)
-	@$(MAKE) -f $(COQMAKEFILE) $@
-	cp $(EXTRA_DIR)/resources/* html
-	mv html $(HTML_OUT)
 
 # Create Coq Makefile.
 Makefile.coq: _CoqProject Makefile awk.Makefile

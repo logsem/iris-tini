@@ -495,8 +495,8 @@ Proof.
   rewrite uPred_fupd_eq /uPred_fupd_def /=.
   replace ⊤ with ((⊤ ∖ E) ∪ E) by by rewrite difference_union_L; set_solver.
   iDestruct (ownE_op with "HE") as "[_ HE]"; first set_solver.
-  rewrite (comm_L _ _ (S n)) -Nat.add_1_r -(assoc_L _ n) (comm_L _ 1)
-          (assoc_L _ n) bi.laterN_plus (comm_L _ n) /=.
+  rewrite (plus_comm _ (S n))  -Nat.add_1_r -plus_assoc (plus_comm 1)
+          plus_assoc bi.laterN_plus (plus_comm n) /=.
   iInduction (nstps rd + n) as [] "IH".
   { iMod ("HP" with "[$Hs $HE]") as "(Hs & HE & ? & HP)".
     by iMod "HP". }

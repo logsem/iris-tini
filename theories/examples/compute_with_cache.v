@@ -109,13 +109,13 @@ Section bi_defs.
       iApply ic_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
       iApply (ic_value (icd_step_fupd _)); umods; iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]; simpl. 
+      iApply ic_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
       iApply (ic_step_fupd_bind _ (fill [LetInCtx _])).
       iApply ic_wand_r; iSplitL.
       { by iApply "Hf_typed_l". }
       iIntros (???) "(-> & #Hf_typed_l')".
-      iApply ic_step_fupd_pure_step; [done|]. simpl. 
+      iApply ic_step_fupd_pure_step; [done|]. simpl.
       iModIntro; asimpl.
       iDestruct "HisCache" as (l1 l2) "(%Hl1 & %Hl2 & HcacheInv)".
       simpl in Hl1. rewrite Hl1.
@@ -142,16 +142,16 @@ Section bi_defs.
       iModIntro; simpl. asimpl. rewrite lam_to_val.
       iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
       iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]; simpl. 
+      iApply ic_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
       iApply (ic_value (icd_step_fupd _)); umods; iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]; simpl. 
+      iApply ic_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
       iApply (ic_step_fupd_bind _ (fill [LetInCtx _])).
       iApply ic_wand_r; iSplitL.
       { by iApply "Hf_typed_r". }
       iIntros (???) "(-> & #Hf_typed_r')".
-      iApply ic_step_fupd_pure_step; [done|]; simpl. 
+      iApply ic_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
       iDestruct "HisCache" as (l1 l2) "(%Hl1 & %Hl2 & HcacheInv)".
       simpl in Hl2. rewrite Hl2.
@@ -179,15 +179,15 @@ Section bi_defs.
   Definition is_closed (f : expr) := ∀ σ, f.[σ] = f.
 
   Lemma compute_aux_closed :
-    is_closed compute_aux. 
+    is_closed compute_aux.
   Proof. rewrite /is_closed. autosubst. Qed.
 
   Lemma loc_closed (ι : loc) :
     is_closed (# ι).
-  Proof. rewrite /is_closed. autosubst. Qed. 
-    
+  Proof. rewrite /is_closed. autosubst. Qed.
+
   Hint Rewrite compute_aux_closed : autosubst.
-  Hint Rewrite loc_closed : autosubst.  
+  Hint Rewrite loc_closed : autosubst.
   Opaque compute_aux.
 
   Lemma compute_typed Θ ρ f1 f2 f1v f2v f cache1 cache2 :
@@ -198,7 +198,7 @@ Section bi_defs.
     ⟦ fun_out ⟧ₑ Θ ρ (compute (#cache1) (#f1v)
                     , compute (#cache2) (#f2v)).
   Proof.
-    iIntros (HPers Hv1 Hv2 Hcl1 Hcl2) "#HCoh #isCache #isWellBehaved". 
+    iIntros (HPers Hv1 Hv2 Hcl1 Hcl2) "#HCoh #isCache #isWellBehaved".
     iPoseProof (compute_aux_typed with "HCoh isCache isWellBehaved") as "(HrecomputeL & HrecomputeR & Hrecompute)".
     iDestruct "isCache" as (l1 l2) "/= (-> & -> & HcacheInv)".
     rewrite /compute !lam_to_val.
@@ -209,7 +209,7 @@ Section bi_defs.
     rewrite !compute_aux_closed. asimpl.
     iApply (ic_value ic_binary); umods.
     iApply (ic_value ic_right); umods.
-    iModIntro. asimpl. 
+    iModIntro. asimpl.
     iApply ic_left_pure_step; first done.
     iApply ic_left_pure_step_index; first done.
     iModIntro. simpl. asimpl.
@@ -524,7 +524,7 @@ Section bi_defs.
     iApply ic_left_pure_step_index; first done.
     iModIntro. asimpl.
     iPoseProof ((compute_typed _ _ f1 f2) with "HCoh") as "compute_typed"; [done|done|].
-    rewrite -!Hv1 !Hcl1 -!Hv2 !Hcl2 Hv1 Hv2. 
+    rewrite -!Hv1 !Hcl1 -!Hv2 !Hcl2 Hv1 Hv2.
     iApply "compute_typed".
     - rewrite /is_cache_ref.
       iExists _, _; eauto.

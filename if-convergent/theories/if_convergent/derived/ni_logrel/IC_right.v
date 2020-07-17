@@ -15,7 +15,7 @@ Section ic_right.
        ICD_modality_index := [Prod nat];
        ICD_modality_bind_condition k k' f Ξ :=
          k' ≤ k ∧ (∀ x, f x = k - k') ∧ Ξ = λ _, id;
-       ICD_modality k E n Φ := (|={E, ∅}▷=>^(n + k) |={E}=> Φ tt)%I;
+       ICD_modality k E n Φ := (|={E}[∅]▷=>^(n + k) |={E}=> Φ tt)%I;
     |}.
 
   Global Instance ICC_right : ICC icd_right.
@@ -157,14 +157,14 @@ Section ic_right.
   Qed.
 
   Lemma ic_indexed_step_fupd_index_step_fupd k k' E e Φ :
-    (|={E, ∅}▷=>^k' IC@{icd_right, k } e @ E {{ Φ }})%I
+    (|={E}[∅]▷=>^k' IC@{icd_right, k } e @ E {{ Φ }})%I
     ⊢ IC@{icd_right, k' + k } e @ E {{ Φ }}.
   Proof.
     iIntros "H".
     rewrite ic_eq /ic_def.
     iIntros (σ1 σ2 v n Hr) "Hi".
     rewrite /ICC_modality /=.
-    rewrite (comm_L _ n) -(assoc_L _ k') (comm_L _ _ n).
+    rewrite plus_comm -plus_assoc (plus_comm _ n).
     iApply step_fupdN_plus.
     iApply (step_fupdN_wand with "H").
     iIntros "H".
@@ -217,7 +217,7 @@ Lemma ic_right_lift_atomic_step E Φ e1 n:
    (∀ σ1, ICD_SI σ1 ={E, ∅}=∗
         ▷ ∀ v2 σ2,
             ⌜prim_step e1 σ1 [] (of_val v2) σ2 []⌝
-             ={∅, E}=∗ (ICD_SI σ2 ∗ |={E,∅}▷=>^n |={E}=> Φ v2 1))
+             ={∅, E}=∗ (ICD_SI σ2 ∗ |={E}[∅]▷=>^n |={E}=> Φ v2 1))
     ⊢ IC@{icd_right ICD_SI, n} e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   iIntros (??).
@@ -231,7 +231,7 @@ Lemma ic_right_lift_atomic_det_step E Φ e1 n :
      (▷ ∃ v2 σ2,
            ⌜∀ e2' σ2', prim_step e1 σ1 [] e2' σ2' [] →
                      σ2 = σ2' ∧ to_val e2' = Some v2⌝ ∧
-                     |={∅, E}=> ICD_SI σ2 ∗ |={E,∅}▷=>^n |={E}=> Φ v2 1))
+                     |={∅, E}=> ICD_SI σ2 ∗ |={E}[∅]▷=>^n |={E}=> Φ v2 1))
     ⊢ IC@{icd_right ICD_SI, n} e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   by iIntros (??);
@@ -314,7 +314,7 @@ Lemma ic_right_lift_atomic_head_step  E Φ e1 n:
    (∀ σ1, ICD_SI σ1 ={E, ∅}=∗
      ▷ ∀ v2 σ2,
           ⌜head_step e1 σ1 [] (of_val v2) σ2 []⌝ ={∅, E}=∗
-          (ICD_SI σ2 ∗ |={E,∅}▷=>^n |={E}=> Φ v2 1))
+          (ICD_SI σ2 ∗ |={E}[∅]▷=>^n |={E}=> Φ v2 1))
      ⊢ IC@{icd_right ICD_SI, n} e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   by intros;
@@ -385,7 +385,7 @@ Lemma ic_right_lift_atomic_head_step'  E Φ e1 n:
    (∀ σ1, ICD_SI σ1 ={E, ∅}=∗
       ▷ (∀ v2 σ2,
           ⌜head_step e1 σ1 [] (of_val v2) σ2 []⌝
-          ={∅, E}=∗ (ICD_SI σ2 ∗ |={E,∅}▷=>^n |={E}=> Φ v2 1)))
+          ={∅, E}=∗ (ICD_SI σ2 ∗ |={E}[∅]▷=>^n |={E}=> Φ v2 1)))
     ⊢ IC@{icd_right ICD_SI, n} e1 @ E {{ λ v n _, Φ v n }}.
 Proof.
   iIntros (???).
@@ -416,7 +416,7 @@ Typeclasses Transparent ICC_state_interp ICC_modality.
 Lemma ic_right_adequacy_basic  E e σ Φ k :
   ICD_SI σ ∗ IC@{icd_right ICD_SI, k} e @ E {{ λ v n _, Φ v n }} -∗
     ∀ (rd : Reds e σ),
-      |={E, ∅}▷=>^(nstps rd + k)
+      |={E}[∅]▷=>^(nstps rd + k)
         |={E}=> ICD_SI (end_state rd) ∗ Φ (end_val rd) (nstps rd).
 Proof.
   iApply (ic_adequacy_basic (icd_right ICD_SI) k E e σ (λ v n _, Φ v n)).

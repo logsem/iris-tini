@@ -13,7 +13,7 @@ Section ic_step_fupd.
        ICD_Extra := [Prod];
        ICD_modality_index := [Prod];
        ICD_modality_bind_condition idx idx' f Ξ := Ξ = λ _, id;
-       ICD_modality idx E n Φ := (|={E, ∅}▷=>^n |={E}=> Φ tt)%I;
+       ICD_modality idx E n Φ := (|={E}[∅]▷=>^n |={E}=> Φ tt)%I;
     |}.
 
   Global Instance ICC_step_fupd : ICC icd_step_fupd.
@@ -395,7 +395,7 @@ Typeclasses Transparent ICC_state_interp ICC_modality.
 Lemma ic_step_fupd_adequacy_basic  E e σ Φ :
   ICD_SI σ ∗ IC@{icd_step_fupd ICD_SI} e @ E {{ λ v n _, Φ v n }} -∗
     ∀ (rd : Reds e σ),
-      |={E, ∅}▷=>^(nstps rd)
+      |={E}[∅]▷=>^(nstps rd)
         |={E}=> ICD_SI (end_state rd) ∗ Φ (end_val rd) (nstps rd).
 Proof.
   iApply (ic_adequacy_basic (icd_step_fupd ICD_SI) _ E e σ (λ v n _, Φ v n)).

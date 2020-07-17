@@ -1,38 +1,10 @@
-EXTRA_DIR:=extra
-COQDOCFLAGS:= \
-  --external 'http://ssr2.msr-inria.inria.fr/doc/ssreflect-1.5/' Ssreflect \
-  --external 'http://ssr2.msr-inria.inria.fr/doc/mathcomp-1.5/' MathComp \
-  --toc --toc-depth 2 --html --interpolate \
-  --index indexpage --no-lib-name --parse-comments \
-  --with-header $(EXTRA_DIR)/header.html --with-footer $(EXTRA_DIR)/footer.html
-export COQDOCFLAGS
-COQMAKEFILE:=Makefile.coq
-COQ_PROJ:=_CoqProject
-HTML_OUT:=html-logrel-ifc
-# VS:=$(wildcard *.v)
-# VS_IN_PROJ:=$(shell grep .v $(COQ_PROJ))
-
-# ifeq (,$(VS_IN_PROJ))
-# VS_OTHER := $(VS)
-# else
-# VS := $(VS_IN_PROJ)
-# endif
-
-html: all
-	make -C if-convergent html
-	rm -fr $(HTML_OUT)
-	@$(MAKE) -f $(COQMAKEFILE) $@
-	cp $(EXTRA_DIR)/resources/* html
-	mv html $(HTML_OUT)
-
 all: Makefile.coq
-	cd if-convergent && $(MAKE) all
+	cd if-convergent && $(MAKE)
 	+make -f Makefile.coq all
 
 clean: Makefile.coq
 	cd if-convergent && $(MAKE) clean
 	+make -f Makefile.coq clean
-	find theories $$(test -d tests && echo tests) \( -name "*.d" -o -name "*.vo" -o -name "*.aux" -o -name "*.cache" -o -name "*.glob" -o -name "*.vio" \) -print -delete
 	rm -f Makefile.coq
 
 Makefile.coq: _CoqProject
