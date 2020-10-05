@@ -1,9 +1,9 @@
 From iris.algebra Require Export base.
 From iris.base_logic Require Import upred.
-From IC.if_convergent Require Export IC.
 From iris.program_logic Require Import weakestpre.
 From iris.base_logic Require Import invariants.
 From Autosubst Require Export Autosubst.
+From mwp Require Export mwp.
 Import uPred.
 
 Canonical Structure varC := leibnizO var.
@@ -35,7 +35,7 @@ Ltac properness :=
   | |- (_ ∨ _)%I ≡ (_ ∨ _)%I => apply or_proper
   | |- (_ → _)%I ≡ (_ → _)%I => apply impl_proper
   | |- (WP _ {{ _ }})%I ≡ (WP _ {{ _ }})%I => apply wp_proper =>?
-  | |- (IC@{_} _ {{ _ }})%I ≡ (IC@{_} _ {{ _ }})%I => apply ic_proper=>???
+  | |- (MWP@{_} _ {{ _ }})%I ≡ (MWP@{_} _ {{ _ }})%I => apply mwp_proper=>???
   | |- (▷ _)%I ≡ (▷ _)%I => apply later_proper
   | |- (□ _)%I ≡ (□ _)%I => apply intuitionistically_proper
   | |- (<pers> _)%I ≡ (<pers> _)%I => apply persistently_proper

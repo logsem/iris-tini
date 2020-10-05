@@ -200,24 +200,16 @@ Section lambda_sec_types.
   Proof.
     - destruct t;
         repeat (match goal with τ : sectype |- _ => destruct τ end);
-        simpl; firstorder.
-      + by rewrite rename_subst_comp_type up_comp_ren_subst.
-      + by rewrite (rename_subst_comp_type _ (λ x, _.|[_])) ren_label_subst_type.
-      + by rewrite rename_subst_comp_type up_comp_ren_subst.
-      + by rewrite rename_subst_comp_type up_comp_ren_subst.
+        rewrite /= ?rename_subst_comp_type // up_comp_ren_subst //.      
     - by destruct τ; simpl; f_equal.
   Qed.
 
   Local Lemma rename_subst_ren xi t : rename xi t = t.[ren xi]
   with rename_hsubst_ren xi τ : rename xi τ = τ.|[ren xi].
   Proof.
-    - destruct t; simpl;
-        repeat (match goal with τ : sectype |- _ => destruct τ end);
-        simpl; firstorder.
-      + by rewrite rename_subst_ren up_upren_internal.
-      + asimpl. by rewrite rename_subst_ren.
-      + by rewrite rename_subst_ren up_upren_internal.
-      + by rewrite rename_subst_ren up_upren_internal.
+    - destruct t; 
+        repeat (match goal with τ : sectype |- _ => destruct τ end); 
+        rewrite /= ?rename_subst_ren // up_upren_internal //.
     - by destruct τ; simpl; f_equal.
   Qed.
 
@@ -227,12 +219,8 @@ Section lambda_sec_types.
     (rename xi τ).|[sigma] = τ.|[xi >>> sigma].
   Proof.
     - destruct t; simpl;
-        repeat (match goal with τ : sectype |- _ => destruct τ end);
-        simpl; firstorder.
-      + by rewrite rename_subst_subst_comp up_comp_ren_subst.
-      + by rewrite (rename_subst_subst_comp _ (λ x, _.|[_])) ren_label_subst_type.
-      + by rewrite rename_subst_subst_comp up_comp_ren_subst.
-      + by rewrite rename_subst_subst_comp up_comp_ren_subst.
+        repeat (match goal with τ : sectype |- _ => destruct τ end); simpl;
+          rewrite ?rename_subst_subst_comp // up_comp_ren_subst //.
     - by destruct τ; simpl; f_equal.
   Qed.
 
@@ -242,7 +230,7 @@ Section lambda_sec_types.
     move: xi s. refine ((fix f t xi s {struct t} := _) t).
     destruct t;
       repeat (match goal with τ : sectype |- _ => destruct τ end);
-      simpl; firstorder.
+      simpl; rewrite ?f //.
   Qed.
 
   Local Lemma rename_type_ren_label xi (sigma : var → type) :
@@ -260,19 +248,15 @@ Section lambda_sec_types.
   Proof.
     - destruct t; simpl;
         repeat (match goal with τ : sectype |- _ => destruct τ end);
-        simpl; firstorder.
-      + rewrite rename_subst_comp_type_rename. repeat f_equal.
-        rewrite up_comp_subst_ren_internal //.
+        simpl; try rewrite ?rename_subst_comp_type_rename //.
+      + repeat f_equal. rewrite up_comp_subst_ren_internal //.
         * apply rename_subst_ren.
         * apply rename_subst_subst_comp.
-      + by rewrite (rename_subst_comp_type_rename (λ x, _.|[_]))
-                   rename_type_ren_label.
-      + rewrite rename_subst_comp_type_rename. repeat f_equal.
-        rewrite up_comp_subst_ren_internal //.
+      + rewrite rename_type_ren_label //.
+      + repeat f_equal. rewrite up_comp_subst_ren_internal //.
         * apply rename_subst_ren.
         * apply rename_subst_subst_comp.
-      + rewrite rename_subst_comp_type_rename. repeat f_equal.
-        rewrite up_comp_subst_ren_internal //.
+      + repeat f_equal. rewrite up_comp_subst_ren_internal //.
         * apply rename_subst_ren.
         * apply rename_subst_subst_comp.
     - by destruct τ; simpl; f_equal.
@@ -281,11 +265,7 @@ Section lambda_sec_types.
   Lemma rename_subst xi t : rename xi t = t.[ren xi]
   with rename_hsubst xi τ : rename xi τ = τ.|[ren xi].
   Proof.
-    - destruct t; simpl; firstorder.
-      + by rewrite rename_hsubst; autosubst.
-      + rewrite rename_hsubst. f_equal.
-      + by rewrite rename_hsubst; autosubst.
-      + by rewrite rename_hsubst; autosubst.
+    - destruct t; simpl; rewrite ?rename_hsubst //; f_equal; autosubst.     
     - by destruct τ; simpl; f_equal.
   Qed.
 
@@ -296,18 +276,14 @@ Section lambda_sec_types.
         by (apply up_id_internal; reflexivity).
       destruct t; simpl;
         repeat (match goal with τ : sectype |- _ => destruct τ end);
-        simpl; firstorder.
-      + by rewrite up_id subst_type_id.
-      + by rewrite up_id subst_type_id.
-      + by rewrite up_id subst_type_id.
+        simpl; rewrite ?up_id ?subst_type_id //. 
     - by destruct τ; simpl; f_equal.
   Qed.
 
   Lemma up_hcomp_dist (sigma : var → type) theta :
     up (sigma >>| theta) = up sigma >>| theta.
   Proof.
-    rewrite up_hcomp_internal //;
-            auto using rename_type_label_subst_commute.
+    rewrite up_hcomp_internal //; auto using rename_type_label_subst_commute.
   Qed.
 
   Lemma upn_hsubst_ren n t :
@@ -322,12 +298,8 @@ Section lambda_sec_types.
     move: sigma tau. refine ((fix IH t sigma tau {struct t} := _) t).
     destruct t;
       repeat (match goal with τ : sectype |- _ => destruct τ end);
-     simpl; firstorder.
-    - do 2 f_equal. rewrite up_hcomp_dist //.
-    - do 2 f_equal. move: IH => /(_ t (up sigma) (tau >>| ren (+1))).
-           by asimpl.
-    - do 2 f_equal. rewrite up_hcomp_dist //.
-    - do 2 f_equal. rewrite up_hcomp_dist //.
+      simpl; try rewrite ?IH //; do 2 f_equal; rewrite ?up_hcomp_dist //.
+    move: IH => /(_ t (up sigma) (tau >>| ren (+1))). by asimpl.
   Qed.
 
   Lemma hsubst_type_label_subst_commute (sigma tau : var → type) σ:
@@ -342,15 +314,15 @@ Section lambda_sec_types.
   Proof.
     - destruct t; simpl;
         (repeat (match goal with τ : sectype |- _ => destruct τ end));
-        simpl; firstorder.
-      + rewrite subst_type_comp up_comp_internal; [done|done|..].
+        simpl; rewrite ?subst_type_comp //.      
+      + rewrite  up_comp_internal; [done|done|..].
         * apply rename_subst_comp_type.
         * apply rename_subst_comp_type_rename.
-      + rewrite subst_type_comp hsubst_type_label_subst_commute //.
-      + rewrite subst_type_comp up_comp_internal; [done|done|..].
+      + rewrite hsubst_type_label_subst_commute //.
+      + rewrite up_comp_internal; [done|done|..].
         * apply rename_subst_comp_type.
         * apply rename_subst_comp_type_rename.
-      + rewrite subst_type_comp up_comp_internal; [done|done|..].
+      + rewrite up_comp_internal; [done|done|..].
         * apply rename_subst_comp_type.
         * apply rename_subst_comp_type_rename.
     - by destruct τ; simpl; f_equal.

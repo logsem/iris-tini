@@ -1,6 +1,6 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.
@@ -28,7 +28,7 @@ Section related.
     rewrite /interp_ref_inv /= !loc_to_val.
     iApply ic_un_bi_lr.
     iApply (ic_step_fupd_bind _ (fill [IfCtx _ _])).
-    iApply (ic_atomic ((icd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
+    iApply (ic_atomic ((mwpd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
     iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
     iModIntro.
@@ -54,7 +54,7 @@ Section related.
         intros [] ?; inversion 1; simpl; apply is_Some_alt=> //.
     - iApply (ic_step_fupd_pure_step SI_left); [done|]. iModIntro.
       iApply ic_value. umods. iModIntro.
-      iApply (ic_value (icd_step_fupd SI_right)); umods. uunits.
+      iApply (ic_value (mwpd_step_fupd SI_right)); umods. uunits.
       rewrite bool_decide_eq_true_2 //.
   Qed.
 

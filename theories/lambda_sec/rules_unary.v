@@ -1,8 +1,8 @@
 From iris.base_logic Require Export gen_heap.
 From iris.program_logic Require Export language ectx_language ectxi_language.
 From iris.proofmode Require Import tactics.
-From IC.if_convergent Require Export IC ICTriple.
-From IC.if_convergent.derived Require Export IC_step_fupd IC_fupd.
+From mwp Require Export mwp mwp_triple.
+From mwp.mwp_modalities Require Export mwp_step_fupd mwp_fupd.
 From logrel_ifc.lambda_sec Require Export lang lattice.
 
 Class secG_un Σ := SecG_un {
@@ -10,7 +10,7 @@ Class secG_un Σ := SecG_un {
   secG_un_gen_heapG :> gen_heapG loc val Σ;
 }.
 
-Tactic Notation "umods" := rewrite /ICC_modality /ICD_modality; cbn.
+Tactic Notation "umods" := rewrite /mwpC_modality /mwpD_modality; cbn.
 
 Ltac inv_head_step :=
   repeat match goal with
@@ -97,18 +97,18 @@ Notation "l ↦{ q } -" := (∃ v, l ↦{q} v)%I
   (at level 20, q at level 50, format "l  ↦{ q }  -") : bi_scope.
 Notation "l ↦ -" := (l ↦{1} -)%I (at level 20) : bi_scope.
 
-Section ic_lang_lemmas.
+Section mwp_lang_lemmas.
   Context `{secG_un Σ}.
 
   Definition SI (σ : state) : iProp Σ := (gen_heap_ctx σ)%I.
 
-  Lemma ic_fupd_alloc E v Φ :
-    {{| ∀ l, l ↦ v -∗ Φ (LocV l) 1 |}}@{icd_fupd SI}
+  Lemma mwp_fupd_alloc E v Φ :
+    {{| ∀ l, l ↦ v -∗ Φ (LocV l) 1 |}}@{mwpd_fupd SI}
       Alloc (# v) @ E
     {{| w ; n, Φ w n |}}.
   Proof.
     iIntros "_ !> HΦ".
-    iApply ic_fupd_lift_atomic_head_step'; auto.
+    iApply mwp_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
@@ -119,13 +119,13 @@ Section ic_lang_lemmas.
     by iApply "HΦ".
   Qed.
 
-  Lemma ic_fupd_load E l q v Φ :
-    {{| l ↦{q} v ∗ (l ↦{q} v -∗ Φ v 1) |}}@{icd_fupd SI}
+  Lemma mwp_fupd_load E l q v Φ :
+    {{| l ↦{q} v ∗ (l ↦{q} v -∗ Φ v 1) |}}@{mwpd_fupd SI}
       Load (Loc l) @ E
     {{| w ; n, Φ w n |}}.
   Proof.
     iIntros "_ !> [Hl HΦ]".
-    iApply ic_fupd_lift_atomic_head_step'; auto.
+    iApply mwp_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
@@ -135,13 +135,13 @@ Section ic_lang_lemmas.
     by iApply "HΦ".
   Qed.
 
-  Lemma ic_fupd_store E l v v' Φ :
-    {{| l ↦ v ∗ (l ↦ v' -∗ Φ UnitV 1) |}}@{icd_fupd SI}
+  Lemma mwp_fupd_store E l v v' Φ :
+    {{| l ↦ v ∗ (l ↦ v' -∗ Φ UnitV 1) |}}@{mwpd_fupd SI}
       Store (Loc l) (# v') @ E
     {{| w ; n, Φ w n |}}.
   Proof.
     iIntros "_ !> [Hl HΦ]".
-    iApply ic_fupd_lift_atomic_head_step'; auto.
+    iApply mwp_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
@@ -152,13 +152,13 @@ Section ic_lang_lemmas.
     by iApply "HΦ".
   Qed.
 
-  Lemma ic_step_fupd_alloc E v Φ :
-    {{| ▷ ∀ l, l ↦ v -∗ Φ (LocV l) 1 |}}@{icd_step_fupd SI}
+  Lemma mwp_step_fupd_alloc E v Φ :
+    {{| ▷ ∀ l, l ↦ v -∗ Φ (LocV l) 1 |}}@{mwpd_step_fupd SI}
       Alloc (# v) @ E
     {{| w ; n, Φ w n |}}.
   Proof.
     iIntros "_ !> HΦ".
-    iApply ic_step_fupd_lift_atomic_head_step'; auto.
+    iApply mwp_step_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
@@ -169,13 +169,13 @@ Section ic_lang_lemmas.
     by iApply "HΦ".
   Qed.
 
-  Lemma ic_step_fupd_load E l q v Φ :
-    {{| ▷ l ↦{q} v ∗ ▷ (l ↦{q} v -∗ Φ v 1) |}}@{icd_step_fupd SI}
+  Lemma mwp_step_fupd_load E l q v Φ :
+    {{| ▷ l ↦{q} v ∗ ▷ (l ↦{q} v -∗ Φ v 1) |}}@{mwpd_step_fupd SI}
       Load (Loc l) @ E
     {{| w ; n, Φ w n |}}.
   Proof.
     iIntros "_ !> [Hl HΦ]".
-    iApply ic_step_fupd_lift_atomic_head_step'; auto.
+    iApply mwp_step_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
@@ -186,13 +186,13 @@ Section ic_lang_lemmas.
     by iApply "HΦ".
   Qed.
 
-  Lemma ic_step_fupd_store E l v v' Φ :
-    {{| ▷ l ↦ v ∗ ▷ (l ↦ v' -∗ Φ UnitV 1) |}}@{icd_step_fupd SI}
+  Lemma mwp_step_fupd_store E l v v' Φ :
+    {{| ▷ l ↦ v ∗ ▷ (l ↦ v' -∗ Φ UnitV 1) |}}@{mwpd_step_fupd SI}
       Store (Loc l) (# v') @ E
     {{| w ; n, Φ w n |}}.
   Proof.
     iIntros "_ !> [Hl HΦ]".
-    iApply ic_step_fupd_lift_atomic_head_step'; auto.
+    iApply mwp_step_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
     iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
@@ -203,4 +203,4 @@ Section ic_lang_lemmas.
     by iApply "HΦ".
   Qed.
 
-End ic_lang_lemmas.
+End mwp_lang_lemmas.

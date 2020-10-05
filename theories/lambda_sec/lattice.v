@@ -120,7 +120,7 @@ Section TwoPoint.
 
   Implicit Types ℓ : tplabel.
 
-  Fixpoint join_tplabel ℓ ℓ' :=
+  Definition join_tplabel ℓ ℓ' :=
     match ℓ with
     | L => ℓ'
     | H => H

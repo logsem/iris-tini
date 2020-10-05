@@ -66,7 +66,7 @@ Section lambda_sec_typing.
 
   Notation "τ ↘ ℓ" := (type_flowsto τ ℓ) (at level 70).
 
-  Fixpoint binop_type (op : binop) : type :=
+  Definition binop_type (op : binop) : type :=
     match op with
     | Add | Sub | Mult => TNat
     | Eq | Le | Lt => TBool

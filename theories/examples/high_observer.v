@@ -1,6 +1,6 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 (* OBS: high observer *)
@@ -37,14 +37,14 @@ Section related.
     iDestruct "Hlow" as ([l1 l2]) "[-> #Hlow] /=".
     iDestruct "Hhigh" as ([l1' l2']) "[-> #Hhigh] /=".
     rewrite /interp_ref_inv /= !loc_to_val.
-    iApply (ic_left_strong_bind _ _ (fill [StoreRCtx _]) (fill [StoreRCtx _])); cbn.
-    iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+    iApply (mwp_left_strong_bind _ _ (fill [StoreRCtx _]) (fill [StoreRCtx _])); cbn.
+    iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
     iInv (nroot.@(l1',l2')) as "Hl" "HcloseI".
     iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
     iModIntro.
-    iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+    iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
     iFrame. iIntros "!> Hl1".
-    iApply ((@ic_fupd_load _ secG_un_right) with "[//]").
+    iApply ((@mwp_fupd_load _ secG_un_right) with "[//]").
     iFrame. iIntros "Hl2". ubools.
     rewrite bool_decide_eq_true_2 //=.
     iDestruct "Hτ" as (? b) "(-> & -> & ->)".
@@ -52,14 +52,14 @@ Section related.
     { iNext. iExists _,_. iFrame. ubools.
       rewrite bool_decide_eq_true_2 //. eauto. }
     iModIntro.
-    iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+    iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
     iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
     iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
     iModIntro.
     rewrite !bool_to_val.
-    iApply (@ic_step_fupd_store _ secG_un_left); [done|].
+    iApply (@mwp_step_fupd_store _ secG_un_left); [done|].
     iFrame. iIntros "!> Hl1".
-    iApply (@ic_fupd_store _ secG_un_right); [done|].
+    iApply (@mwp_fupd_store _ secG_un_right); [done|].
     iFrame. iIntros "Hl2".
     rewrite interp_sec_def interp_bool_def bool_decide_eq_true_2 //=.
     iDestruct "Hτ" as (? b') "(-> & -> & ->)".
@@ -83,14 +83,14 @@ Section related.
     iDestruct "Hlow" as ([l1 l2]) "[-> #Hlow] /=".
     iDestruct "Hhigh" as ([l1' l2']) "[-> #Hhigh] /=".
     rewrite /interp_ref_inv /= !loc_to_val !bool_to_val.
-    iApply (ic_left_strong_bind _ _ (fill [IfCtx _ _]) (fill [IfCtx _ _])).
-    iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+    iApply (mwp_left_strong_bind _ _ (fill [IfCtx _ _]) (fill [IfCtx _ _])).
+    iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
     iInv (nroot.@(l1',l2')) as "Hl" "HcloseI".
     iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
     iModIntro.
-    iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+    iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
     iFrame. iIntros "!> Hl1".
-    iApply ((@ic_fupd_load _ secG_un_right) with "[//]").
+    iApply ((@mwp_fupd_load _ secG_un_right) with "[//]").
     iFrame. iIntros "Hl2".
     rewrite interp_sec_def interp_bool_def bool_decide_eq_true_2 //=.
     iDestruct "Hτ" as (? b) "(-> & -> & ->)".
@@ -99,16 +99,16 @@ Section related.
       rewrite bool_decide_eq_true_2 //=. eauto. }
     iModIntro.
     destruct b.
-    - iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+    - iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       iNext.
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
       iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
       iModIntro. rewrite !bool_to_val.
-      iApply (@ic_step_fupd_store _ secG_un_left); [done|].
+      iApply (@mwp_step_fupd_store _ secG_un_left); [done|].
       iFrame. iIntros "!> Hl1".
-      iApply (@ic_fupd_store _ secG_un_right); [done|].
+      iApply (@mwp_fupd_store _ secG_un_right); [done|].
       iFrame. iIntros "Hl2".
       rewrite interp_sec_def interp_bool_def bool_decide_eq_true_2 //=.
       iDestruct "Hτ" as (? b') "(-> & -> & ->)".
@@ -116,16 +116,16 @@ Section related.
       { iNext. iExists _,_. iFrame. ubools.
         rewrite bool_decide_eq_true_2 //. eauto. }
       rewrite interp_sec_def interp_unit_def bool_decide_eq_true_2 //.
-    - iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+    - iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       iNext.
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
       iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
       iModIntro. rewrite !bool_to_val.
-      iApply (@ic_step_fupd_store _ secG_un_left); [done|].
+      iApply (@mwp_step_fupd_store _ secG_un_left); [done|].
       iFrame. iIntros "!> Hl1".
-      iApply (@ic_fupd_store _ secG_un_right); [done|].
+      iApply (@mwp_fupd_store _ secG_un_right); [done|].
       iFrame. iIntros "Hl2".
       rewrite interp_sec_def interp_bool_def bool_decide_eq_true_2 //=.
       iDestruct "Hτ" as (? b') "(-> & -> & ->)".

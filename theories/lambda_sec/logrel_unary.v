@@ -4,7 +4,8 @@ From iris.base_logic Require Export gen_heap.
 From iris.base_logic.lib Require Export invariants.
 From iris.proofmode Require Import tactics.
 From iris_string_ident Require Import ltac2_string_ident.
-From IC.if_convergent Require Export IC derived.IC_step_fupd.
+From mwp Require Export mwp.
+From mwp.mwp_modalities Require Export mwp_step_fupd.
 From logrel_ifc.lambda_sec Require Export lang rules_unary typing logrel_label.
 
 Reserved Notation "⌊ τ ⌋"  (at level 0, τ at level 70).
@@ -23,7 +24,7 @@ Section logrel_un.
   Implicit Types interp : lty.
 
   Definition interp_un_expr interp Δ ρ pc e : iProp Σ :=
-    ⌜⌊ pc ⌋ₗ ρ ⋢ ζ⌝ → IC@{icd_step_fupd SI} e {{ v, interp Δ ρ v }}.
+    ⌜⌊ pc ⌋ₗ ρ ⋢ ζ⌝ → MWP@{mwpd_step_fupd SI} e {{ v, interp Δ ρ v }}.
   Global Instance interp_un_expr_proper n :
     Proper ((dist n) ==> (dist n) ==> (=) ==> (=) ==> (=) ==> dist n) interp_un_expr.
   Proof.

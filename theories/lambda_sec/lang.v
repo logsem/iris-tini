@@ -90,7 +90,7 @@ Module lambda_sec.
 
   Notation "# v" := (of_val v) (at level 20).
 
-  Fixpoint binop_eval (op : binop) (a b : nat) : val :=
+  Definition binop_eval (op : binop) (a b : nat) : val :=
     match op with
     | Add => NatV (a + b)
     | Sub => NatV (a - b)

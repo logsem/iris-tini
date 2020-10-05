@@ -1,8 +1,8 @@
 From iris.algebra Require Import list.
 From iris.proofmode Require Import tactics.
 From iris.base_logic.lib Require Export invariants.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Local Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.
@@ -113,62 +113,62 @@ Section bi_defs.
   Proof.
     iIntros (Θ ρ vvs Hpers) "[#Hcoh _]".
     asimpl. rewrite !lam_to_val !bool_to_val.
-    iApply (ic_left_strong_bind _ _ (fill [AppLCtx _])
+    iApply (mwp_left_strong_bind _ _ (fill [AppLCtx _])
                                     (fill [AppLCtx _])); cbn.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     asimpl. rewrite !lam_to_val. iModIntro.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right _)); umods. iModIntro.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right _)); umods. iModIntro.
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     iModIntro. asimpl.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right _)); umods. iModIntro.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right _)); umods. iModIntro.
     rewrite [⟦ (_ →[H] _ @ _) @ _ ⟧ₛ _ _ _]interp_sec_def interp_arrow_def.
     rewrite bool_decide_eq_true_2 //.
     repeat iSplit.
     - iIntros "!>" (?) "_ /=".
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       iModIntro. asimpl.
-      iApply (ic_left_strong_bind _ _ (fill [SeqCtx _])
+      iApply (mwp_left_strong_bind _ _ (fill [SeqCtx _])
                                   (fill [SeqCtx _])); cbn.
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value (icd_right _)); umods. do 2 iModIntro.
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|]. iModIntro.
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value (icd_right _)); umods. do 2 iModIntro.
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value (mwpd_right _)); umods. do 2 iModIntro.
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|]. iModIntro.
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value (mwpd_right _)); umods. do 2 iModIntro.
       rewrite interp_sec_def interp_unit_def.
       rewrite bool_decide_eq_true_2 //.
     - rewrite interp_un_arrow_def.
       iIntros "!>" (?) "_ /= %".
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-      iApply (ic_step_fupd_bind _ (fill [SeqCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+      iApply (mwp_step_fupd_bind _ (fill [SeqCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
       asimpl.
-      iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
+      iApply (mwp_value (mwpd_step_fupd _)); umods. iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
       asimpl.
-      iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
+      iApply (mwp_value (mwpd_step_fupd _)); umods. iModIntro.
       rewrite interp_un_sec_def interp_un_unit_def //.
     - rewrite interp_un_arrow_def.
       iIntros "!>" (?) "_ /= %".
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-      iApply (ic_step_fupd_bind _ (fill [SeqCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+      iApply (mwp_step_fupd_bind _ (fill [SeqCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
       asimpl.
-      iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
+      iApply (mwp_value (mwpd_step_fupd _)); umods. iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
       asimpl.
-      iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
+      iApply (mwp_value (mwpd_step_fupd _)); umods. iModIntro.
       rewrite interp_un_sec_def interp_un_unit_def //.
   Qed.
 

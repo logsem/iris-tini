@@ -1,6 +1,6 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Section typed.
@@ -124,48 +124,48 @@ Section specs.
  Proof.
    iIntros "Hx Hxs".
    rewrite /interp_expr /head /= .
-   iApply (ic_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])).
-   iApply ic_left_pure_step; [done|].
-   iApply ic_left_pure_step_index; [done|].
+   iApply (mwp_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])).
+   iApply mwp_left_pure_step; [done|].
+   iApply mwp_left_pure_step_index; [done|].
    iModIntro. asimpl.
-   iApply (ic_value ic_binary); umods.
-   iApply (ic_value (icd_right _)); umods.
+   iApply (mwp_value mwp_binary); umods.
+   iApply (mwp_value (mwpd_right _)); umods.
    iModIntro.
-   iApply ic_left_pure_step; [done|].
-   iApply ic_left_pure_step_index; [done|].
+   iApply mwp_left_pure_step; [done|].
+   iApply mwp_left_pure_step_index; [done|].
    iModIntro. asimpl.
    rewrite [⟦ list _ _ ⟧ₛ _ _ _]interp_sec_def /=.
    rewrite bool_decide_eq_true_2; last apply ord_bottom.
    rewrite interp_rec_def fixpoint_interp_rec1_eq /interp_rec1 /=.
    iDestruct "Hxs" as ([w1 w2]) "[% #Hxs]". simplify_eq.
    rewrite -interp_rec_def /=.
-   iApply (ic_left_strong_bind _ _ (fill [CaseCtx _ _]) (fill [CaseCtx _ _])); cbn.
-   iApply ic_left_pure_step; [done|].
-   iApply ic_left_pure_step_index; [done|].
-   iApply (ic_value ic_binary); umods.
-   iApply (ic_value (icd_right _)); umods.
+   iApply (mwp_left_strong_bind _ _ (fill [CaseCtx _ _]) (fill [CaseCtx _ _])); cbn.
+   iApply mwp_left_pure_step; [done|].
+   iApply mwp_left_pure_step_index; [done|].
+   iApply (mwp_value mwp_binary); umods.
+   iApply (mwp_value (mwpd_right _)); umods.
    rewrite [⟦ _ + _ @ _⟧ₛ _ _ _]interp_sec_def
            bool_decide_eq_true_2; last apply ord_bottom.
    do 2 iModIntro.
    rewrite interp_sum_def.
    iDestruct "Hxs" as (??) "[(% & Hxs) | (% & Hxs)]"; simplify_eq.
-   - iApply ic_left_pure_step; [done|].
-     iApply ic_left_pure_step_index; [done|].
+   - iApply mwp_left_pure_step; [done|].
+     iApply mwp_left_pure_step_index; [done|].
      rewrite -/of_val. asimpl.
-     iApply (ic_value ic_binary); umods.
-     iApply (ic_value (icd_right _)); umods.
+     iApply (mwp_value mwp_binary); umods.
+     iApply (mwp_value (mwpd_right _)); umods.
      done.
-   - iApply ic_left_pure_step; [done|].
-     iApply ic_left_pure_step_index; [done|].
+   - iApply mwp_left_pure_step; [done|].
+     iApply mwp_left_pure_step_index; [done|].
      rewrite -/of_val. asimpl.
      rewrite [⟦ _ * _ @ _⟧ₛ _ _ _]interp_sec_def
              bool_decide_eq_true_2; last apply ord_bottom.
      rewrite interp_prod_def /=.
      iDestruct "Hxs" as (????) "(-> & -> & Hhead & _)".
-     iApply ic_left_pure_step; [done|].
-     iApply ic_left_pure_step_index; [done|]. rewrite -/of_val.
-     iApply (ic_value ic_binary); umods.
-     iApply (ic_value (icd_right _)); umods.
+     iApply mwp_left_pure_step; [done|].
+     iApply mwp_left_pure_step_index; [done|]. rewrite -/of_val.
+     iApply (mwp_value mwp_binary); umods.
+     iApply (mwp_value (mwpd_right _)); umods.
      do 3 iModIntro.
      by iApply (interp_sec_type_weaken _ [] [_] _ 0).
   Qed.
@@ -176,47 +176,47 @@ Section specs.
  Proof.
    iIntros "Hxs".
    rewrite /interp_expr /tail /= .
-   iApply ic_left_pure_step; [done|].
-   iApply ic_left_pure_step_index; [done|].
+   iApply mwp_left_pure_step; [done|].
+   iApply mwp_left_pure_step_index; [done|].
    iModIntro. asimpl.
    rewrite [⟦ list _ _ ⟧ₛ _ _ _]interp_sec_def /=.
    rewrite bool_decide_eq_true_2; last apply ord_bottom.
    rewrite interp_rec_def fixpoint_interp_rec1_eq /interp_rec1 /=.
    iDestruct "Hxs" as ([w1 w2]) "[% #Hxs]". simplify_eq.
    rewrite -interp_rec_def /=.
-   iApply (ic_left_strong_bind _ _ (fill [CaseCtx _ _]) (fill [CaseCtx _ _])); cbn.
-   iApply ic_left_pure_step; [done|].
-   iApply ic_left_pure_step_index; [done|].
-   iApply (ic_value ic_binary); umods.
-   iApply (ic_value (icd_right _)); umods.
+   iApply (mwp_left_strong_bind _ _ (fill [CaseCtx _ _]) (fill [CaseCtx _ _])); cbn.
+   iApply mwp_left_pure_step; [done|].
+   iApply mwp_left_pure_step_index; [done|].
+   iApply (mwp_value mwp_binary); umods.
+   iApply (mwp_value (mwpd_right _)); umods.
    rewrite [⟦ _ + _ @ _⟧ₛ _ _ _]interp_sec_def
            bool_decide_eq_true_2; last apply ord_bottom.
    do 2 iModIntro.
    rewrite interp_sum_def.
    iDestruct "Hxs" as (??) "[(% & Hxs) | (% & Hxs)]"; simplify_eq.
-   - iApply ic_left_pure_step; [done|].
-     iApply ic_left_pure_step_index; [done|].
+   - iApply mwp_left_pure_step; [done|].
+     iApply mwp_left_pure_step_index; [done|].
      rewrite -/of_val. asimpl.
-     iApply (ic_value ic_binary); umods.
-     iApply (ic_value (icd_right _)); umods.
+     iApply (mwp_value mwp_binary); umods.
+     iApply (mwp_value (mwpd_right _)); umods.
      do 2 iModIntro. rewrite /list.
      rewrite (interp_sec_def _ _ _ (FoldV _, FoldV _)) bool_decide_eq_true_2; last apply ord_bottom.
      rewrite interp_rec_def fixpoint_interp_rec1_eq /interp_rec1 //=.
      iModIntro. iExists ((InjLV _), (InjLV _)). iSplit; try done. iModIntro.
      rewrite (interp_sec_def _ _ (TSum _ _ @ _) ) bool_decide_eq_true_2; last apply ord_bottom.
      rewrite interp_sum_def.
-     iExists H, H0. iLeft; iSplit; try done.
-   - iApply ic_left_pure_step; [done|].
-     iApply ic_left_pure_step_index; [done|].
+     iExists _, _. iLeft; iSplit; try done.
+   - iApply mwp_left_pure_step; [done|].
+     iApply mwp_left_pure_step_index; [done|].
      rewrite -/of_val. asimpl.
      rewrite [⟦ _ * _ @ _⟧ₛ _ _ _]interp_sec_def
              bool_decide_eq_true_2; last apply ord_bottom.
      rewrite interp_prod_def /=.
      iDestruct "Hxs" as (????) "(-> & -> & _ & Htail)".
-     iApply ic_left_pure_step; [done|].
-     iApply ic_left_pure_step_index; [done|]. rewrite -/of_val.
-     iApply (ic_value ic_binary); umods.
-     iApply (ic_value (icd_right _)); umods.
+     iApply mwp_left_pure_step; [done|].
+     iApply mwp_left_pure_step_index; [done|]. rewrite -/of_val.
+     iApply (mwp_value mwp_binary); umods.
+     iApply (mwp_value (mwpd_right _)); umods.
      do 3 iModIntro.
      rewrite interp_sec_def bool_decide_eq_true_2; last apply ord_bottom.
      rewrite interp_tvar_def //= /list.

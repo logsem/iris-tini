@@ -1,5 +1,5 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent Require Import IC_adequacy.
+From mwp Require Import mwp_adequacy.
 From logrel_ifc.lambda_sec Require Export lang typing fundamental_binary.
 From logrel_ifc.lambda_sec Require Import lattice.
 
@@ -32,13 +32,13 @@ Section soundness.
     end_val rd = end_val rd'.
   Proof.
     intros Hlog.
-    eapply (ic_left_adequacy
+    eapply (mwp_left_adequacy
               (SI Σ) (SI Σ) (SI_init Σ) (SI_init Σ) _ _ _ _ _ (λ x _ y _, x = y)).
     iIntros ([? [leftG rightG]]).
     rewrite /SI_init /SI /=.
     iIntros "[Hl Hr]".
     iModIntro. iFrame.
-    iApply (ic_wand_r with "[-]"); iSplitL.
+    iApply (mwp_wand_r with "[-]"); iSplitL.
     { iApply (Hlog (SecG _ _ leftG rightG) [] [] [(BoolV b1, BoolV b2)] with "[]").
       iSplit; first rewrite /env_coherent //.
       iApply interp_env_cons.

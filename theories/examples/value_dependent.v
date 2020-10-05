@@ -1,6 +1,6 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 (* Output is a pair (is_secret, data) where the first projection denotes
@@ -47,20 +47,20 @@ Section proof.
     (∃ ι1 ι2, ⌜p1 = LocV ι1⌝ ∗ ⌜p2 = LocV ι2⌝ ∗ inv (Ndep ι1 ι2) (dep_inv Θ ρ ι1 ι2))%I.
 
   Lemma make_dep_spec (v1 v2 : val) Θ ρ :
-    {{| ⟦ TNat @ H ⟧ₛ Θ ρ (v1, v2) |}}@{ic_binary, (make_dep (# v2)) }
+    {{| ⟦ TNat @ H ⟧ₛ Θ ρ (v1, v2) |}}@{mwp_binary, (make_dep (# v2)) }
       make_dep (# v1)
     {{| v1 ; _ | v2 ; _, is_dep Θ ρ v1 v2 |}}.
   Proof.
     iIntros "_ !> Hnat". rewrite /make_dep.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     asimpl.
     iModIntro.
-    iApply ic_un_bi_lr. rewrite !bool_to_val !pair_to_val.
-    iApply ((@ic_step_fupd_alloc _ secG_un_left) with "[//]").
+    iApply mwp_un_bi_lr. rewrite !bool_to_val !pair_to_val.
+    iApply ((@mwp_step_fupd_alloc _ secG_un_left) with "[//]").
     iNext. iIntros (ι1) "Hι1".
-    iApply ic_fupd.
-    iApply ((@ic_step_fupd_alloc _ secG_un_right) with "[//]").
+    iApply mwp_fupd.
+    iApply ((@mwp_step_fupd_alloc _ secG_un_right) with "[//]").
     iNext. iIntros (ι2) "Hι2"; cbn.
     iMod (inv_alloc (Ndep ι1 ι2) _ (dep_inv _ _ ι1 ι2) with "[-]") as "#Hinv".
     { iNext. iExists _,_,_. iFrame. }
@@ -74,7 +74,7 @@ Section proof.
     IntoVal f fv →
     is_closed f →
     (∀ Θ ρ v1 v2,
-    {{| is_dep Θ ρ v1 v2 |}}@{ic_binary, f (# v2)}
+    {{| is_dep Θ ρ v1 v2 |}}@{mwp_binary, f (# v2)}
         f (# v1)
     {{| _ ; _ | _ ; _, True |}}) →
     [TNat @ H] ⊨ prog f ≤ₗ prog f : TNat @ L.
@@ -85,60 +85,60 @@ Section proof.
     iDestruct (interp_env_cons with "Henv") as "[#Hn _]".
     asimpl. rewrite /interp_expr.
     rewrite lam_to_val !Hfcl -!Hfval.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     asimpl.
-    iApply (ic_left_strong_bind _ _ (fill [LetInCtx _]) (fill [LetInCtx _])); cbn.
+    iApply (mwp_left_strong_bind _ _ (fill [LetInCtx _]) (fill [LetInCtx _])); cbn.
     iModIntro.
-    iApply (ic_wand_r ic_binary); iSplitL.
+    iApply (mwp_wand_r mwp_binary); iSplitL.
     { by iApply make_dep_spec. }
     iClear "Hn".
     iIntros (w1 ? [w2 ?]) "#Hdep"; cbn.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     iNext; cbn. asimpl.
     rewrite !Hfval.
-    iApply (ic_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
-    iApply (ic_wand_r ic_binary); iSplitL.
+    iApply (mwp_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
+    iApply (mwp_wand_r mwp_binary); iSplitL.
     { iApply (Hf with "[//] Hdep"). }
     iIntros (???) "_".
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     iModIntro.
     iDestruct "Hdep" as (ι1 ι2) "(-> & -> & Hinv)". cbn.
-    iApply (ic_left_strong_bind _ _ (fill [LetInCtx _]) (fill [LetInCtx _])).
-    iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+    iApply (mwp_left_strong_bind _ _ (fill [LetInCtx _]) (fill [LetInCtx _])).
+    iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
     iInv (nroot.@(ι1,ι2)) as (b d1 d2) "(Hι1 & Hι2 & #Hι)" "HcloseI".
     iModIntro.
-    iApply (@ic_step_fupd_load _ secG_un_left); [done|].
+    iApply (@mwp_step_fupd_load _ secG_un_left); [done|].
     iFrame. iIntros "!> Hι1".
-    iApply ((@ic_fupd_load _ secG_un_right) with "[//]").
+    iApply ((@mwp_fupd_load _ secG_un_right) with "[//]").
     iFrame. iIntros "Hι2".
     iMod ("HcloseI" with "[Hι1 Hι2 Hι]") as "_".
     { iNext. iExists _,_,_. iFrame. iFrame "#". }
     iModIntro. cbn.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     iModIntro. asimpl.
-    iApply (ic_left_strong_bind _ _ (fill [IfCtx _ _]) (fill [IfCtx _ _])).
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value ic_right); umods.
+    iApply (mwp_left_strong_bind _ _ (fill [IfCtx _ _]) (fill [IfCtx _ _])).
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value mwp_right); umods.
     do 2 iModIntro. rewrite bool_to_val.
     destruct b.
-    - iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value ic_right); umods.
+    - iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value mwp_right); umods.
       do 2 iModIntro. unats.
       rewrite bool_decide_eq_false_2 // bool_decide_eq_true_2 //. eauto.
-    - iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value ic_right); umods.
+    - iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value mwp_right); umods.
       eauto.
   Qed.
 

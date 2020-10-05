@@ -1,8 +1,8 @@
 From iris.algebra Require Import list.
 From iris.proofmode Require Import tactics.
 From iris.base_logic.lib Require Export invariants.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Local Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.
@@ -85,11 +85,10 @@ Section bi_defs.
   Arguments of_val : simpl never.
 
   Definition isWellBehaved Θ ρ (f1 f2 : expr) (f : val -> val) (τ1 τ2 : sectype) :=
-    (<pers> ((∀ v1,  ⌊τ1 ₗ⌋ₛ (projl Θ) ρ v1 -∗ IC@{icd_step_fupd SI_left}  (f1) (#v1) {{w1, ⌜ w1 = (f v1) ⌝ ∗ ⌊τ2 ₗ⌋ₛ (projl Θ)ρ w1 }}) ∗
-             (∀ v2,  ⌊τ1 ᵣ⌋ₛ (projr Θ) ρ v2 -∗ IC@{icd_step_fupd SI_right} (f2) (#v2) {{w2, ⌜ w2 = (f v2) ⌝ ∗ ⌊τ2 ᵣ⌋ₛ (projr Θ)ρ w2 }}) ∗
+    (<pers> ((∀ v1,  ⌊τ1 ₗ⌋ₛ (projl Θ) ρ v1 -∗ MWP@{mwpd_step_fupd SI_left}  (f1) (#v1) {{w1, ⌜ w1 = (f v1) ⌝ ∗ ⌊τ2 ₗ⌋ₛ (projl Θ)ρ w1 }}) ∗
+             (∀ v2,  ⌊τ1 ᵣ⌋ₛ (projr Θ) ρ v2 -∗ MWP@{mwpd_step_fupd SI_right} (f2) (#v2) {{w2, ⌜ w2 = (f v2) ⌝ ∗ ⌊τ2 ᵣ⌋ₛ (projr Θ)ρ w2 }}) ∗
              (∀ v1 v2, ⟦τ1⟧ₛ Θ ρ (v1, v2) -∗ ⟦τ2⟧ₛ Θ ρ (f v1, f v2)))
     )%I.
-
 
   Lemma compute_aux_typed Θ ρ f1 f2 f1v f2v f cache1 cache2 :
     envs_Persistent Θ → IntoVal f1 f1v → IntoVal f2 f2v → env_coherent Θ -∗
@@ -101,30 +100,30 @@ Section bi_defs.
     rewrite /compute_aux !lam_to_val.
     iSplitL; [| iSplitL ].
     - iIntros "!>" (v) "#Hv".
-      iApply (ic_step_fupd_bind _ (fill [AppLCtx _; AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|].
+      iApply (mwp_step_fupd_bind _ (fill [AppLCtx _; AppLCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|].
       iModIntro; simpl. asimpl. rewrite lam_to_val.
-      iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
-      iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]; simpl.
+      iApply (mwp_value (mwpd_step_fupd _)); umods. iModIntro.
+      iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
-      iApply (ic_value (icd_step_fupd _)); umods; iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]; simpl.
+      iApply (mwp_value (mwpd_step_fupd _)); umods; iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
-      iApply (ic_step_fupd_bind _ (fill [LetInCtx _])).
-      iApply ic_wand_r; iSplitL.
+      iApply (mwp_step_fupd_bind _ (fill [LetInCtx _])).
+      iApply mwp_wand_r; iSplitL.
       { by iApply "Hf_typed_l". }
       iIntros (???) "(-> & #Hf_typed_l')".
-      iApply ic_step_fupd_pure_step; [done|]. simpl.
+      iApply mwp_step_fupd_pure_step; [done|]. simpl.
       iModIntro; asimpl.
       iDestruct "HisCache" as (l1 l2) "(%Hl1 & %Hl2 & HcacheInv)".
       simpl in Hl1. rewrite Hl1.
-      iApply (ic_step_fupd_bind _ (fill [SeqCtx _])).
-      iApply (ic_atomic (icd_step_fupd _) _ StronglyAtomic); try done.
+      iApply (mwp_step_fupd_bind _ (fill [SeqCtx _])).
+      iApply (mwp_atomic (mwpd_step_fupd _) _ StronglyAtomic); try done.
       iInv (Ncache) as "H" "Hclose". iModIntro.
       iDestruct "H" as (????) "(Hl1 & Hl2 & #Hc1 & #Hc2 & #H_typedl & #H_typedr & #H_typedl' & #H_typedr')".
       rewrite !pair_to_val.
-      iApply ((@ic_step_fupd_store _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
       rewrite /cache_inv.
       iMod ("Hclose" with "[Hl1 Hl2]") as "_".
@@ -132,35 +131,35 @@ Section bi_defs.
         iModIntro; iExists _, _, _, _. iFrame.
         iFrame "#"; eauto.
       }
-      iApply ic_step_fupd_pure_step; first done.
+      iApply mwp_step_fupd_pure_step; first done.
       do 2 iModIntro.
-      iApply ic_value; umods. iModIntro.
+      iApply mwp_value; umods. iModIntro.
       iFrame "#"; eauto.
     - iIntros "!>" (v) "#Hv".
-      iApply (ic_step_fupd_bind _ (fill [AppLCtx _; AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|].
+      iApply (mwp_step_fupd_bind _ (fill [AppLCtx _; AppLCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|].
       iModIntro; simpl. asimpl. rewrite lam_to_val.
-      iApply (ic_value (icd_step_fupd _)); umods. iModIntro.
-      iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]; simpl.
+      iApply (mwp_value (mwpd_step_fupd _)); umods. iModIntro.
+      iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
-      iApply (ic_value (icd_step_fupd _)); umods; iModIntro.
-      iApply ic_step_fupd_pure_step; [done|]; simpl.
+      iApply (mwp_value (mwpd_step_fupd _)); umods; iModIntro.
+      iApply mwp_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
-      iApply (ic_step_fupd_bind _ (fill [LetInCtx _])).
-      iApply ic_wand_r; iSplitL.
+      iApply (mwp_step_fupd_bind _ (fill [LetInCtx _])).
+      iApply mwp_wand_r; iSplitL.
       { by iApply "Hf_typed_r". }
       iIntros (???) "(-> & #Hf_typed_r')".
-      iApply ic_step_fupd_pure_step; [done|]; simpl.
+      iApply mwp_step_fupd_pure_step; [done|]; simpl.
       iModIntro; asimpl.
       iDestruct "HisCache" as (l1 l2) "(%Hl1 & %Hl2 & HcacheInv)".
       simpl in Hl2. rewrite Hl2.
-      iApply (ic_step_fupd_bind _ (fill [SeqCtx _])).
-      iApply (ic_atomic (icd_step_fupd _) _ StronglyAtomic); try done.
+      iApply (mwp_step_fupd_bind _ (fill [SeqCtx _])).
+      iApply (mwp_atomic (mwpd_step_fupd _) _ StronglyAtomic); try done.
       iInv (Ncache) as "H" "Hclose". iModIntro.
       iDestruct "H" as (????) "(Hl1 & Hl2 & #Hc1 & #Hc2 & #H_typedl & #H_typedr & #H_typedl' & #H_typedr')".
       rewrite !pair_to_val.
-      iApply ((@ic_step_fupd_store _ secG_un_right) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_right) with "[//]").
       iFrame. iIntros "!> Hl2".
       rewrite /cache_inv.
       iMod ("Hclose" with "[Hl1 Hl2]") as "_".
@@ -168,9 +167,9 @@ Section bi_defs.
         iModIntro; iExists _, _, _, _. iFrame.
         iFrame "#"; eauto.
       }
-      iApply ic_step_fupd_pure_step; first done.
+      iApply mwp_step_fupd_pure_step; first done.
       do 2 iModIntro.
-      iApply ic_value; umods. iModIntro.
+      iApply mwp_value; umods. iModIntro.
       iFrame "#"; eauto.
     - iIntros "!>" (v1 v2) "#Hvv".
       by iApply "Hf_typed".
@@ -202,99 +201,99 @@ Section bi_defs.
     iPoseProof (compute_aux_typed with "HCoh isCache isWellBehaved") as "(HrecomputeL & HrecomputeR & Hrecompute)".
     iDestruct "isCache" as (l1 l2) "/= (-> & -> & HcacheInv)".
     rewrite /compute !lam_to_val.
-    iApply (ic_left_strong_bind _ _ (fill [ AppLCtx _ ]) (fill [ AppLCtx _ ])).
-    iApply ic_left_pure_step; first done.
-    iApply ic_left_pure_step_index; first done.
+    iApply (mwp_left_strong_bind _ _ (fill [ AppLCtx _ ]) (fill [ AppLCtx _ ])).
+    iApply mwp_left_pure_step; first done.
+    iApply mwp_left_pure_step_index; first done.
     iModIntro. simpl.
     rewrite !compute_aux_closed. asimpl.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value ic_right); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value mwp_right); umods.
     iModIntro. asimpl.
-    iApply ic_left_pure_step; first done.
-    iApply ic_left_pure_step_index; first done.
+    iApply mwp_left_pure_step; first done.
+    iApply mwp_left_pure_step_index; first done.
     iModIntro. simpl. asimpl.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value ic_right); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value mwp_right); umods.
     iModIntro; asimpl.
     rewrite [⟦ fun_out ⟧ₛ _ _ ((λ: _ )%V, (λ: _)%V)] interp_sec_def /= bool_decide_eq_true_2 //.
     rewrite interp_arrow_def.
     iSplitL.
     - iIntros "!>" (vv) "#Hvv".
-      iApply ic_left_pure_step; first done.
-      iApply ic_left_pure_step_index; first done.
+      iApply mwp_left_pure_step; first done.
+      iApply mwp_left_pure_step_index; first done.
       iModIntro. asimpl.
-      iApply (ic_left_strong_bind _ _ (fill [ LetInCtx _ ]) (fill [ LetInCtx _ ])).
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_left_strong_bind _ _ (fill [ LetInCtx _ ]) (fill [ LetInCtx _ ])).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv (Ncache) as "H" "Hclose". iModIntro. rewrite /cache_inv.
       iDestruct "H" as (????) "(Hl1 & Hl2 & #Hc1 & #Hc2 & #H_typedl & #H_typedr & #H_typedl' & #H_typedr')".
-      iApply ((@ic_step_fupd_load _ secG_un_left)); [done|].
+      iApply ((@mwp_step_fupd_load _ secG_un_left)); [done|].
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_load _ secG_un_right)); [done|].
+      iApply ((@mwp_fupd_load _ secG_un_right)); [done|].
       iFrame. iIntros "Hl2 /=". rewrite !Hcl1 !Hcl2.
       iMod ("Hclose" with "[-]") as "_".
       { iNext. iExists _,_,_,_. iFrame. iFrame "#". }
       iModIntro. cbn.
-      iApply ic_left_pure_step; first done.
-      iApply ic_left_pure_step_index; first done.
+      iApply mwp_left_pure_step; first done.
+      iApply mwp_left_pure_step_index; first done.
       iModIntro. rewrite /= !compute_aux_closed !Hcl1 !Hcl2. asimpl.
-      iApply (ic_left_strong_bind _ _ (fill [ BinOpLCtx _ _; IfCtx _ _ ]) (fill [ BinOpLCtx _ _; IfCtx _ _ ])).
+      iApply (mwp_left_strong_bind _ _ (fill [ BinOpLCtx _ _; IfCtx _ _ ]) (fill [ BinOpLCtx _ _; IfCtx _ _ ])).
       rewrite [⟦ TNat @ _ ⟧ₛ _ _ _]interp_sec_def interp_nat_def !interp_un_sec_def !interp_un_nat_def /=.
       case_bool_decide as Hflows.
       {
-        iApply ic_left_pure_step; first done.
-        iApply ic_left_pure_step_index; first done.
-        iModIntro. iApply ic_value; umods.
-        iApply (ic_value ic_right); umods. iModIntro.
-        iApply (ic_left_strong_bind _ _ (fill [ IfCtx _ _ ]) (fill [ IfCtx _ _ ])).
+        iApply mwp_left_pure_step; first done.
+        iApply mwp_left_pure_step_index; first done.
+        iModIntro. iApply mwp_value; umods.
+        iApply (mwp_value mwp_right); umods. iModIntro.
+        iApply (mwp_left_strong_bind _ _ (fill [ IfCtx _ _ ]) (fill [ IfCtx _ _ ])).
         iDestruct "Hvv" as (n1 n2) "(-> & -> & ->)".
         iDestruct "H_typedl" as (H') "->".
         iDestruct "H_typedr" as (H0') "->".
         iDestruct "H_typedl'" as (H1') "->".
         iDestruct "H_typedr'" as (H2') "->".
-        iApply ic_left_pure_step; first done.
-        iApply ic_left_pure_step_index; first done.
+        iApply mwp_left_pure_step; first done.
+        iApply mwp_left_pure_step_index; first done.
         iModIntro. simpl.
         case_bool_decide as Heql; case_bool_decide as Heqr.
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro. cbn.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
-          iApply ic_value; umods.
-          iApply (ic_value ic_right); umods.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
+          iApply mwp_value; umods.
+          iApply (mwp_value mwp_right); umods.
           do 2 iModIntro.
           iDestruct "Hc1" as "->"; iDestruct "Hc2" as "->".
           iApply "Hrecompute"; subst.
           rewrite [⟦ TNat @ §0 ⟧ₛ _ _ _] interp_sec_def /=. case_bool_decide.
           + rewrite interp_nat_def. by iExists _, _.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro. cbn.
-          iApply ic_un_bi_lr.
-          iApply ic_wand_r; iSplitL.
+          iApply mwp_un_bi_lr.
+          iApply mwp_wand_r; iSplitL.
           { rewrite Hv1. iApply "HrecomputeL". by iExists _. }
           iIntros (???) "(-> & #Hrecomputed)".
-          iApply ic_step_fupd_pure_step; first done.
-          iApply ic_value; umods.
+          iApply mwp_step_fupd_pure_step; first done.
+          iApply mwp_value; umods.
           do 2 iModIntro. iDestruct "Hc2" as "->".
           iApply "Hrecompute".
           rewrite [⟦ TNat @ §0 ⟧ₛ _ _ _] interp_sec_def /=. case_bool_decide.
           + rewrite interp_nat_def. by iExists _, _.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro; cbn.
-          iApply ic_un_bi_lr.
-          iApply ic_step_fupd_pure_step; first done.
-          iModIntro. iApply ic_value; umods. iModIntro.
-          iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+          iApply mwp_un_bi_lr.
+          iApply mwp_step_fupd_pure_step; first done.
+          iModIntro. iApply mwp_value; umods. iModIntro.
+          iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
           { rewrite Hv2. iApply "HrecomputeR". by iExists _. }
           iIntros (???) "(-> & #Hrecomputed)".
           iDestruct "Hc1" as "->".
@@ -302,16 +301,16 @@ Section bi_defs.
           rewrite [⟦ TNat @ §0 ⟧ₛ _ _ _] interp_sec_def /=. case_bool_decide.
           + rewrite interp_nat_def. by iExists _, _.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro; cbn.
-          iApply ic_un_bi_lr.
-          iApply ic_wand_r; iSplitL.
+          iApply mwp_un_bi_lr.
+          iApply mwp_wand_r; iSplitL.
           { rewrite Hv1. iApply "HrecomputeL". by iExists _. }
           iIntros (???) "(-> & #HrecomputedL)".
-          iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+          iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
           { rewrite Hv2. iApply "HrecomputeR". by iExists _. }
           iIntros (???) "(-> & #HrecomputedR) /=".
           iApply "Hrecompute".
@@ -320,11 +319,11 @@ Section bi_defs.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
       }
       {
-        iApply ic_left_pure_step; first done.
-        iApply ic_left_pure_step_index; first done.
-        iModIntro. iApply ic_value; umods.
-        iApply (ic_value ic_right); umods. iModIntro.
-        iApply (ic_left_strong_bind _ _ (fill [ IfCtx _ _ ]) (fill [ IfCtx _ _ ])).
+        iApply mwp_left_pure_step; first done.
+        iApply mwp_left_pure_step_index; first done.
+        iModIntro. iApply mwp_value; umods.
+        iApply (mwp_value mwp_right); umods. iModIntro.
+        iApply (mwp_left_strong_bind _ _ (fill [ IfCtx _ _ ]) (fill [ IfCtx _ _ ])).
         iDestruct "Hvv" as "(Hv1 & Hv2)".
         iDestruct "Hv1" as  (v1) "->".
         iDestruct "Hv2" as  (v2) "->".
@@ -332,50 +331,50 @@ Section bi_defs.
         iDestruct "H_typedr" as (H0') "->".
         iDestruct "H_typedl'" as (H1') "->".
         iDestruct "H_typedr'" as (H2') "->".
-        iApply ic_left_pure_step; first done.
-        iApply ic_left_pure_step_index; first done.
+        iApply mwp_left_pure_step; first done.
+        iApply mwp_left_pure_step_index; first done.
         iModIntro. simpl.
         case_bool_decide as Heql; case_bool_decide as Heqr.
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro. cbn.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
-          iApply ic_value; umods.
-          iApply (ic_value ic_right); umods.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
+          iApply mwp_value; umods.
+          iApply (mwp_value mwp_right); umods.
           do 2 iModIntro.
           iDestruct "Hc1" as "->"; iDestruct "Hc2" as "->".
           iApply "Hrecompute"; subst.
           rewrite [⟦ TNat @ §0 ⟧ₛ _ _ _] interp_sec_def /=. case_bool_decide.
           + rewrite interp_nat_def. by iExists v1, v2.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro. cbn.
-          iApply ic_un_bi_lr.
-          iApply ic_wand_r; iSplitL.
+          iApply mwp_un_bi_lr.
+          iApply mwp_wand_r; iSplitL.
           { rewrite Hv1. iApply "HrecomputeL". by iExists _. }
           iIntros (???) "(-> & #Hrecomputed)".
-          iApply ic_step_fupd_pure_step; first done.
-          iApply ic_value; umods.
+          iApply mwp_step_fupd_pure_step; first done.
+          iApply mwp_value; umods.
           do 2 iModIntro. iDestruct "Hc2" as "->".
           iApply "Hrecompute".
           rewrite [⟦ TNat @ §0 ⟧ₛ _ _ _] interp_sec_def /=. case_bool_decide.
           + rewrite interp_nat_def. by iExists v1, v2.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro; cbn.
-          iApply ic_un_bi_lr.
-          iApply ic_step_fupd_pure_step; first done.
-          iModIntro. iApply ic_value; umods. iModIntro.
-          iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+          iApply mwp_un_bi_lr.
+          iApply mwp_step_fupd_pure_step; first done.
+          iModIntro. iApply mwp_value; umods. iModIntro.
+          iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
           { rewrite Hv2. iApply "HrecomputeR". by iExists _. }
           iIntros (???) "(-> & #Hrecomputed)".
           iDestruct "Hc1" as "->".
@@ -383,16 +382,16 @@ Section bi_defs.
           rewrite [⟦ TNat @ §0 ⟧ₛ _ _ _] interp_sec_def /=. case_bool_decide.
           + rewrite interp_nat_def. by iExists v1, v2.
           + iSplitL; (rewrite interp_un_sec_def interp_un_nat_def; by iExists _).
-        - iApply (ic_value ic_binary); umods.
-          iApply (ic_value ic_right); umods. iModIntro.
-          iApply ic_left_pure_step; first done.
-          iApply ic_left_pure_step_index; first done.
+        - iApply (mwp_value mwp_binary); umods.
+          iApply (mwp_value mwp_right); umods. iModIntro.
+          iApply mwp_left_pure_step; first done.
+          iApply mwp_left_pure_step_index; first done.
           iModIntro; cbn.
-          iApply ic_un_bi_lr.
-          iApply ic_wand_r; iSplitL.
+          iApply mwp_un_bi_lr.
+          iApply mwp_wand_r; iSplitL.
           { rewrite Hv1. iApply "HrecomputeL". by iExists _. }
           iIntros (???) "(-> & #HrecomputedL)".
-          iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+          iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
           { rewrite Hv2. iApply "HrecomputeR". by iExists _. }
           iIntros (???) "(-> & #HrecomputedR) /=".
           iApply "Hrecompute".
@@ -402,13 +401,13 @@ Section bi_defs.
       }
     - iSplitL; simpl; rewrite interp_un_arrow_def.
       + iIntros "!>" (v1) "#Hv1 %".
-        iApply ic_step_fupd_pure_step; first done.
+        iApply mwp_step_fupd_pure_step; first done.
         rewrite !Hcl1. iModIntro; asimpl.
-        iApply (ic_step_fupd_bind _ (fill [LetInCtx _])).
-        iApply (ic_atomic (icd_step_fupd _) _ StronglyAtomic); try done.
+        iApply (mwp_step_fupd_bind _ (fill [LetInCtx _])).
+        iApply (mwp_atomic (mwpd_step_fupd _) _ StronglyAtomic); try done.
         iInv (Ncache) as "H" "Hclose". iModIntro.
         iDestruct "H" as (????) "(Hl1 & Hl2 & #Hc1 & #Hc2 & #H_typedl & #H_typedr & #H_typedl' & #H_typedr')".
-        iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+        iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
         iFrame. iIntros "!> Hl1".
         rewrite /cache_inv.
         iMod ("Hclose" with "[Hl1 Hl2]") as "_".
@@ -416,36 +415,36 @@ Section bi_defs.
           iModIntro; iExists _, _, _, _. iFrame.
             by iFrame "#".
         }
-        iApply ic_step_fupd_pure_step; first done.
+        iApply mwp_step_fupd_pure_step; first done.
         do 2 iModIntro. rewrite !Hcl1. asimpl.
-        iApply (ic_step_fupd_bind _ (fill [ IfCtx _ _ ])).
+        iApply (mwp_step_fupd_bind _ (fill [ IfCtx _ _ ])).
         rewrite !interp_un_sec_def !interp_un_nat_def.
         iDestruct "H_typedl" as (H') "->".
         iDestruct "H_typedl'" as (H1') "->".
         iDestruct "Hv1" as (v1') "->".
-        iApply (ic_step_fupd_bind _ (fill [ BinOpLCtx _ _ ])).
-        iApply ic_step_fupd_pure_step; first done.
-        iApply ic_value; umods. do 2 iModIntro.
-        iApply ic_step_fupd_pure_step; first done.
-        iApply ic_value; umods. do 2 iModIntro.
+        iApply (mwp_step_fupd_bind _ (fill [ BinOpLCtx _ _ ])).
+        iApply mwp_step_fupd_pure_step; first done.
+        iApply mwp_value; umods. do 2 iModIntro.
+        iApply mwp_step_fupd_pure_step; first done.
+        iApply mwp_value; umods. do 2 iModIntro.
         case_bool_decide.
-        * iApply ic_step_fupd_pure_step; first done.
-          iApply ic_step_fupd_pure_step; first done.
-          iApply ic_value; umods. do 3 iModIntro; subst.
+        * iApply mwp_step_fupd_pure_step; first done.
+          iApply mwp_step_fupd_pure_step; first done.
+          iApply mwp_value; umods. do 3 iModIntro; subst.
           by iExists _.
-        * iApply ic_step_fupd_pure_step; first done.
+        * iApply mwp_step_fupd_pure_step; first done.
           rewrite !Hcl1 Hv1.
-          iApply ic_wand_r; iSplitL.
+          iApply mwp_wand_r; iSplitL.
           { iApply "HrecomputeL". iModIntro. by iExists _. }
           iIntros "!>" (???) "(-> & #Hrecomputed') //".
       + iIntros "!>" (v2) "#Hv2 %".
-        iApply ic_step_fupd_pure_step; first done.
+        iApply mwp_step_fupd_pure_step; first done.
         rewrite !Hcl2. iModIntro; asimpl.
-        iApply (ic_step_fupd_bind _ (fill [LetInCtx _])).
-        iApply (ic_atomic (icd_step_fupd _) _ StronglyAtomic); try done.
+        iApply (mwp_step_fupd_bind _ (fill [LetInCtx _])).
+        iApply (mwp_atomic (mwpd_step_fupd _) _ StronglyAtomic); try done.
         iInv (Ncache) as "H" "Hclose". iModIntro.
         iDestruct "H" as (????) "(Hl1 & Hl2 & #Hc1 & #Hc2 & #H_typedl & #H_typedr & #H_typedl' & #H_typedr')".
-        iApply ((@ic_step_fupd_load _ secG_un_right) with "[//]").
+        iApply ((@mwp_step_fupd_load _ secG_un_right) with "[//]").
         iFrame. iIntros "!> Hl2".
         rewrite /cache_inv.
         iMod ("Hclose" with "[Hl1 Hl2]") as "_".
@@ -453,26 +452,26 @@ Section bi_defs.
           iModIntro; iExists _, _, _, _. iFrame.
             by iFrame "#".
         }
-        iApply ic_step_fupd_pure_step; first done.
+        iApply mwp_step_fupd_pure_step; first done.
         do 2 iModIntro. rewrite !Hcl2. asimpl.
-        iApply (ic_step_fupd_bind _ (fill [ IfCtx _ _ ])).
+        iApply (mwp_step_fupd_bind _ (fill [ IfCtx _ _ ])).
         rewrite !interp_un_sec_def !interp_un_nat_def.
         iDestruct "H_typedr" as (H') "->".
         iDestruct "H_typedr'" as (H1') "->".
         iDestruct "Hv2" as (v2') "->".
-        iApply (ic_step_fupd_bind _ (fill [ BinOpLCtx _ _ ])).
-        iApply ic_step_fupd_pure_step; first done.
-        iApply ic_value; umods. do 2 iModIntro.
-        iApply ic_step_fupd_pure_step; first done.
-        iApply ic_value; umods. do 2 iModIntro.
+        iApply (mwp_step_fupd_bind _ (fill [ BinOpLCtx _ _ ])).
+        iApply mwp_step_fupd_pure_step; first done.
+        iApply mwp_value; umods. do 2 iModIntro.
+        iApply mwp_step_fupd_pure_step; first done.
+        iApply mwp_value; umods. do 2 iModIntro.
         case_bool_decide.
-        * iApply ic_step_fupd_pure_step; first done.
-          iApply ic_step_fupd_pure_step; first done.
-          iApply ic_value; umods. do 3 iModIntro; subst.
+        * iApply mwp_step_fupd_pure_step; first done.
+          iApply mwp_step_fupd_pure_step; first done.
+          iApply mwp_value; umods. do 3 iModIntro; subst.
           by iExists _.
-        * iApply ic_step_fupd_pure_step; first done.
+        * iApply mwp_step_fupd_pure_step; first done.
           rewrite !Hcl2 Hv2.
-          iApply ic_wand_r; iSplitL.
+          iApply mwp_wand_r; iSplitL.
           { iApply "HrecomputeR". iModIntro. by iExists _. }
           iIntros "!>" (???) "(-> & #Hrecomputed') //".
   Qed.
@@ -486,33 +485,33 @@ Section bi_defs.
   Proof.
     iIntros (Hpers Hv1 Hv2 Hcl1 Hcl2) "#HCoh #HisWellbehaved".
     rewrite /mkComputeWithCache /mkComputeWithCache !lam_to_val.
-    iApply (ic_left_strong_bind _ _ (fill [ AppLCtx _ ]) (fill [ AppLCtx _ ])).
-    iApply ic_left_pure_step; first done.
-    iApply ic_left_pure_step_index; first done.
+    iApply (mwp_left_strong_bind _ _ (fill [ AppLCtx _ ]) (fill [ AppLCtx _ ])).
+    iApply mwp_left_pure_step; first done.
+    iApply mwp_left_pure_step_index; first done.
     iModIntro. simpl. asimpl.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value ic_right); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value mwp_right); umods.
     iModIntro.
-    iApply ic_left_pure_step; first done.
-    iApply ic_left_pure_step_index; first done.
+    iApply mwp_left_pure_step; first done.
+    iApply mwp_left_pure_step_index; first done.
     iModIntro. rewrite !Hcl1 !Hcl2. asimpl.
-    iApply (ic_left_strong_bind _ _ (fill [ LetInCtx _ ]) (fill [ LetInCtx _ ])).
+    iApply (mwp_left_strong_bind _ _ (fill [ LetInCtx _ ]) (fill [ LetInCtx _ ])).
     rewrite !nat_to_val.
-    iApply (ic_left_strong_bind _ _ (fill [  PairRCtx _; AllocCtx ]) (fill [ PairRCtx _; AllocCtx ])).
+    iApply (mwp_left_strong_bind _ _ (fill [  PairRCtx _; AllocCtx ]) (fill [ PairRCtx _; AllocCtx ])).
     iDestruct "HisWellbehaved" as "(#Hf_typed_l & #Hf_typed_r & #Hf_typed)".
     rewrite !Hcl1 !Hcl2 Hv1 Hv2.
-    iApply ic_un_bi_lr.
-    iApply ic_wand_r; iSplitL.
+    iApply mwp_un_bi_lr.
+    iApply mwp_wand_r; iSplitL.
     { iApply "Hf_typed_l". by iExists _.  }
     iIntros (???) "( -> & #Hf_typed_l' )".
-    iApply ic_wand_r; iSplitL.
+    iApply mwp_wand_r; iSplitL.
     { iApply "Hf_typed_r". by iExists _.  }
     iIntros (???) "( -> & #Hf_typed_r' ) /=".
-    iApply ic_un_bi_lr. rewrite !pair_to_val.
-    iApply ((@ic_step_fupd_alloc _ secG_un_left) with "[//]").
+    iApply mwp_un_bi_lr. rewrite !pair_to_val.
+    iApply ((@mwp_step_fupd_alloc _ secG_un_left) with "[//]").
     iNext. iIntros (ι1) "Hι1".
-    iApply ic_fupd.
-    iApply ((@ic_step_fupd_alloc _ secG_un_right) with "[//]").
+    iApply mwp_fupd.
+    iApply ((@mwp_step_fupd_alloc _ secG_un_right) with "[//]").
     iNext. iIntros (ι2) "Hι2"; cbn.
     iMod (inv_alloc Ncache _ (cache_inv _ _ ι1 ι2 f _ _) with "[-]") as "#HisCache".
     {
@@ -520,8 +519,8 @@ Section bi_defs.
       iExists _, _, _, _. iFrame. iFrame "#". repeat iSplitL; try done.
       all: by iExists _.
     }
-    iApply ic_left_pure_step; first done.
-    iApply ic_left_pure_step_index; first done.
+    iApply mwp_left_pure_step; first done.
+    iApply mwp_left_pure_step_index; first done.
     iModIntro. asimpl.
     iPoseProof ((compute_typed _ _ f1 f2) with "HCoh") as "compute_typed"; [done|done|].
     rewrite -!Hv1 !Hcl1 -!Hv2 !Hcl2 Hv1 Hv2.

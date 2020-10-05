@@ -2,9 +2,9 @@ From iris.algebra Require Import list.
 From iris.base_logic Require Export gen_heap.
 From iris.program_logic Require Export language ectx_language ectxi_language.
 From iris.proofmode Require Import tactics.
-From IC.prelude Require Export base.
-From IC.if_convergent Require Export IC ICTriple.
-From IC.if_convergent.derived.ni_logrel Require Export IC_right IC_left.
+From mwp.prelude Require Export base.
+From mwp Require Export mwp mwp_triple.
+From mwp.mwp_modalities.ni_logrel Require Export mwp_right mwp_left.
 From logrel_ifc.lambda_sec Require Export lang lattice rules_unary logrel_unary.
 
 Class secG Σ := SecG {
@@ -94,13 +94,13 @@ Notation "⌊ τ ᵣ⌋" := (interp_un_right τ) (at level 0, τ at level 70).
 Notation "⌊ τ ᵣ⌋ₑ" := (interp_un_expr_right τ) (at level 0, τ at level 70).
 Notation "⌊ Γ ᵣ⌋*" := (interp_un_env_right Γ) (at level 0, Γ at level 70).
 
-Section ic_binary.
+Section mwp_binary.
   Context `{!secG Σ}.
 
   Definition SI_left  (σ : state) : iProp Σ := (gen_heap_ctx_left σ)%I.
   Definition SI_right (σ : state) : iProp Σ := (gen_heap_ctx_right σ)%I.
 
-  Definition ic_binary := icd_left SI_left SI_right.
-  Definition ic_right := icd_right SI_right.
+  Definition mwp_binary := mwpd_left SI_left SI_right.
+  Definition mwp_right := mwpd_right SI_right.
 
-End ic_binary.
+End mwp_binary.

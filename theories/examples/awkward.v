@@ -1,8 +1,8 @@
 From iris.algebra Require Import csum agree excl.
 From iris.proofmode Require Import tactics.
 From iris_string_ident Require Import ltac2_string_ident.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.
@@ -66,20 +66,20 @@ Section related_un.
   Proof.
     move=> ?. uarrows. rewrite /interp_un_expr.
     iIntros "!>" (n) "Hn %".
-    iApply ic_step_fupd_pure_step; [done|].
+    iApply mwp_step_fupd_pure_step; [done|].
     iModIntro.
-    iApply (ic_step_fupd_bind _ (fill [LetInCtx _])); cbn.
-    iApply (ic_step_fupd_alloc with "[//]").
+    iApply (mwp_step_fupd_bind _ (fill [LetInCtx _])); cbn.
+    iApply (mwp_step_fupd_alloc with "[//]").
     iIntros "!>" (l) "Hl".
-    iApply ic_step_fupd_pure_step; [done|]. asimpl.
+    iApply mwp_step_fupd_pure_step; [done|]. asimpl.
     iModIntro.
     iMod new_pending as (γ) "Hγ".
     iMod (inv_alloc shootN _ ((∃ v, pending γ ∗ l ↦ v) ∨ (shot γ ∗ l ↦ 1)%I)
             with "[Hl Hγ]") as "#Hinv".
     { iNext. iLeft. iExists _. by iFrame. }
-    iApply (ic_value (icd_step_fupd SI)); umods.
-    uarrows. iIntros "!> !>" (?) "_ %H".
-    by destruct H.
+    iApply (mwp_value (mwpd_step_fupd SI)); umods.
+    uarrows. iIntros "!> !>" (?) "_ %Hflow".
+    by destruct Hflow.
   Qed.
 End related_un.
 
@@ -91,8 +91,8 @@ Section related.
     [] ⊨ #awk ≤ₗ #awk : awk_type @ L.
   Proof.
     iIntros (Θ ρ vvs Henv) "[#Hcoh _]".
-    iApply (ic_value ic_binary). umods.
-    iApply (ic_value (icd_right SI_right)). umods.
+    iApply (mwp_value mwp_binary). umods.
+    iApply (mwp_value (mwpd_right SI_right)). umods.
     iIntros "!>". asimpl. uarrows. cbn.
     rewrite bool_decide_eq_true_2 //. uarrows.
     iSplit; last first.
@@ -100,19 +100,19 @@ Section related.
     iIntros "!>" ([w1 w2]). unats.
     rewrite bool_decide_eq_false_2 //.
     iIntros "[Hw1 Hw2]".
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     asimpl. iModIntro.
-    iApply (ic_left_strong_bind _ _ (fill [LetInCtx _]) (fill [LetInCtx _])); cbn.
-    iApply ic_un_bi_lr.
-    iApply ((@ic_step_fupd_alloc _ secG_un_left) with "[//]").
+    iApply (mwp_left_strong_bind _ _ (fill [LetInCtx _]) (fill [LetInCtx _])); cbn.
+    iApply mwp_un_bi_lr.
+    iApply ((@mwp_step_fupd_alloc _ secG_un_left) with "[//]").
     iIntros "!>" (l1) "Hl1".
-    iApply ((@ic_step_fupd_alloc _ secG_un_right) with "[//]").
+    iApply ((@mwp_step_fupd_alloc _ secG_un_right) with "[//]").
     iNext. iIntros (l2) "Hl2". cbn.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     iNext.
     iMod new_pending as (γ) "Hγ".
     iMod (inv_alloc shootN _ ((∃ v1 v2, pending γ ∗ l1 ↦ₗ v1 ∗ l2 ↦ᵣ v2)
@@ -127,72 +127,72 @@ Section related.
     iIntros "!>" ([v1 v2]). uarrows.
     rewrite bool_decide_eq_true_2 //.
     iIntros "(#Hf & #Hf1 & #Hf2)".
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|].
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|].
     iModIntro. asimpl.
-    iApply (ic_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
-    iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+    iApply (mwp_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
+    iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
     iInv shootN as "HN" "Hcl". iModIntro.
     iDestruct "HN" as "[HN|[#Hγ [>Hl1 >Hl2]]]".
     - iDestruct "HN" as (u1 u2) "[>Hγ [>Hl1 >Hl2]]".
       rewrite !loc_to_val !nat_to_val.
-      iApply ((@ic_step_fupd_store _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_store _ secG_un_right) with "[//]").
+      iApply ((@mwp_fupd_store _ secG_un_right) with "[//]").
       iFrame. iIntros "Hl2".
       iMod (shoot with "Hγ") as "#Hγ".
       iMod ("Hcl" with "[-]") as "_".
       { iRight. by iFrame. }
       iModIntro.
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
-      iApply (ic_wand_r ic_binary). iSplitL.
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
+      iApply (mwp_wand_r mwp_binary). iSplitL.
       { iApply ("Hf" $! (UnitV, UnitV)). uunits.
         rewrite bool_decide_eq_true_2 //. }
       iIntros "!>" (???) "#Hτ".
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       iNext.
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv shootN as "HN" "Hcl". iModIntro.
       iDestruct "HN" as "[HN|[_ [>Hl1 >Hl2]]]".
       { iDestruct "HN" as (??) "[>Hγ' [>Hl1 >Hl2]]".
         iDestruct (shot_not_pending with "Hγ Hγ'") as "[]". }
-      iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_load _ secG_un_right) with "[//]").
+      iApply ((@mwp_fupd_load _ secG_un_right) with "[//]").
       iFrame. iIntros "Hl2".
       iMod ("Hcl" with "[-]") as "_".
       { iRight. by iFrame. }
       iModIntro. cbn. unats.
       rewrite bool_decide_eq_true_2 //. eauto.
     - rewrite !loc_to_val !nat_to_val.
-      iApply ((@ic_step_fupd_store _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_store _ secG_un_right) with "[//]").
+      iApply ((@mwp_fupd_store _ secG_un_right) with "[//]").
       iFrame. iIntros "Hl2".
       iMod ("Hcl" with "[-]") as "_".
       { iRight. by iFrame. }
       iModIntro.
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
-      iApply (ic_wand_r ic_binary). iSplitL.
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_left_strong_bind _ _ (fill [SeqCtx _]) (fill [SeqCtx _])); cbn.
+      iApply (mwp_wand_r mwp_binary). iSplitL.
       { iApply ("Hf" $! (UnitV, UnitV)).
         uunits. rewrite bool_decide_eq_true_2 //. }
       iIntros "!>" (???) "#Hτ".
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       iNext.
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv shootN as "HN" "Hcl". iModIntro.
       iDestruct "HN" as "[HN|[_ [>Hl1 >Hl2]]]".
       { iDestruct "HN" as (??) "[>Hγ' [>Hl1 >Hl2]]".
         iDestruct (shot_not_pending with "Hγ Hγ'") as "[]". }
-      iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_load _ secG_un_right) with "[//]").
+      iApply ((@mwp_fupd_load _ secG_un_right) with "[//]").
       iFrame. iIntros "Hl2".
       iMod ("Hcl" with "[-]") as "_".
       { iRight. by iFrame. }

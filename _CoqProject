@@ -1,5 +1,5 @@
 -Q theories logrel_ifc
--Q if-convergent/theories IC
+-Q vendor/modal-weakestpre/theories mwp
 
 -arg -w -arg -notation-overridden
 -arg -w -arg -redundant-canonical-projection
@@ -38,4 +38,4 @@ theories/examples/value_dependent.v
 theories/examples/value_dependent_pack.v
 theories/examples/value_dependent_pack_no_ref.v
 theories/examples/value_dependent_pack_no_ref_no_bool.v
-theories/examples/compute_with_cache.v
+# theories/examples/compute_with_cache.v # slow, removed for CI

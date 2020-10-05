@@ -1,7 +1,7 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas
-     IC_logrel_fupd ni_logrel_fupd_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas
+     mwp_logrel_fupd ni_logrel_fupd_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 (* This is an implicit variation of [refs.v] where we leak (temporarily)
@@ -28,15 +28,15 @@ Section related.
     iDestruct "Hlow" as ([l1 l2]) "[-> #Hlow] /=".
     iDestruct "Hhigh" as ([h1 h2]) "[-> #Hhigh] /=".
     rewrite /interp_expr /=.
-    iApply (ic_left_strong_bind _ _ (fill [BinOpLCtx _ _; IfCtx _ _; SeqCtx _])
+    iApply (mwp_left_strong_bind _ _ (fill [BinOpLCtx _ _; IfCtx _ _; SeqCtx _])
                                 (fill [BinOpLCtx _ _; IfCtx _ _; SeqCtx _])); simpl.
-    iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+    iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
     iInv (nroot.@(h1,h2)) as "Hh" "Hclose !>".
     iDestruct "Hh" as (v1 v2) "(>Hh1 & >Hh2 & #Hv) /=".
     rewrite !loc_to_val.
-    iApply (@ic_step_fupd_load _ secG_un_left); [done|].
+    iApply (@mwp_step_fupd_load _ secG_un_left); [done|].
     iFrame. iIntros "!> Hh1".
-    iApply (@ic_fupd_load _ secG_un_right); [done|].
+    iApply (@mwp_fupd_load _ secG_un_right); [done|].
     iFrame. iIntros "Hh2 /=".
     iMod ("Hclose" with "[-]") as "_".
     { iExists _,_. iFrame. iFrame "#". }
@@ -44,13 +44,13 @@ Section related.
     iDestruct (secbin_subsumes_secun with "[$Hcoh $Hv]") as "[#Hv1 #Hv2] /=".
     rewrite ![⌊ TNat @ _ ⌋ₛ _ _]interp_un_sec_def !interp_un_nat_def.
     iDestruct "Hv1" as (n1) "->". iDestruct "Hv2" as (n2) "->".
-    iApply (ic_left_strong_bind _ _ (fill [IfCtx _ _; SeqCtx _])
+    iApply (mwp_left_strong_bind _ _ (fill [IfCtx _ _; SeqCtx _])
                                 (fill [IfCtx _ _; SeqCtx _])); simpl.
     rewrite !nat_to_val.
-    iApply ic_left_pure_step; [done|].
-    iApply ic_left_pure_step_index; [done|]. simpl.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply mwp_left_pure_step; [done|].
+    iApply mwp_left_pure_step_index; [done|]. simpl.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     do 2 iModIntro.
     iApply ni_logrel_fupd_ni_logrel. iSplit.
     { iLeft. iIntros (σ) "Hσ".
@@ -62,25 +62,25 @@ Section related.
     iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
     iDestruct "Hl" as (w1 w2) "(Hl1 & Hl2 & _) /=".
     do 2 iModIntro.
-    iApply ic_un_bi_fupd_lr.
-    iApply (ic_fupd_bind _ (fill [SeqCtx _])).
+    iApply mwp_un_bi_fupd_lr.
+    iApply (mwp_fupd_bind _ (fill [SeqCtx _])).
     case_bool_decide.
     - (* left then branch *)
-      iApply ic_fupd_pure_step; [done|].
+      iApply mwp_fupd_pure_step; [done|].
       rewrite !loc_to_val !nat_to_val.
-      iApply ((@ic_fupd_store _ secG_un_left)); [done|].
+      iApply ((@mwp_fupd_store _ secG_un_left)); [done|].
       iFrame. iIntros "Hl1".
-      iApply ic_fupd_pure_step; [done|].
-      iApply ((@ic_fupd_store _ secG_un_left)); [done|].
+      iApply mwp_fupd_pure_step; [done|].
+      iApply ((@mwp_fupd_store _ secG_un_left)); [done|].
       iFrame. iIntros "Hl1".
       case_bool_decide.
       + (* right then branch *)
-        iApply (ic_fupd_bind _ (fill [SeqCtx _])).
-        iApply (ic_fupd_pure_step); [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply (mwp_fupd_bind _ (fill [SeqCtx _])).
+        iApply (mwp_fupd_pure_step); [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
-        iApply ic_fupd_pure_step; [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply mwp_fupd_pure_step; [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
         iMod ("HcloseI" with "[-]") as "_".
         { iExists _,_. iModIntro. iFrame. unats.
@@ -89,12 +89,12 @@ Section related.
         rewrite [⟦ () @ L ⟧ₛ _ _ _]interp_sec_def interp_unit_def
                 bool_decide_eq_true_2 //.
       + (* right else branch *)
-        iApply (ic_fupd_bind _ (fill [SeqCtx _])).
-        iApply (ic_fupd_pure_step); [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply (mwp_fupd_bind _ (fill [SeqCtx _])).
+        iApply (mwp_fupd_pure_step); [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
-        iApply ic_fupd_pure_step; [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply mwp_fupd_pure_step; [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
         iMod ("HcloseI" with "[-]") as "_".
         { iExists _,_. iModIntro. iFrame. unats.
@@ -103,21 +103,21 @@ Section related.
         rewrite [⟦ () @ L ⟧ₛ _ _ _]interp_sec_def interp_unit_def
                 bool_decide_eq_true_2 //.
     - (* left else branch - identical to above *)
-      iApply ic_fupd_pure_step; [done|].
+      iApply mwp_fupd_pure_step; [done|].
       rewrite !loc_to_val !nat_to_val.
-      iApply ((@ic_fupd_store _ secG_un_left)); [done|].
+      iApply ((@mwp_fupd_store _ secG_un_left)); [done|].
       iFrame. iIntros "Hl1".
-      iApply ic_fupd_pure_step; [done|].
-      iApply ((@ic_fupd_store _ secG_un_left)); [done|].
+      iApply mwp_fupd_pure_step; [done|].
+      iApply ((@mwp_fupd_store _ secG_un_left)); [done|].
       iFrame. iIntros "Hl1".
       case_bool_decide.
       + (* right then branch *)
-        iApply (ic_fupd_bind _ (fill [SeqCtx _])).
-        iApply (ic_fupd_pure_step); [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply (mwp_fupd_bind _ (fill [SeqCtx _])).
+        iApply (mwp_fupd_pure_step); [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
-        iApply ic_fupd_pure_step; [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply mwp_fupd_pure_step; [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
         iMod ("HcloseI" with "[-]") as "_".
         { iExists _,_. iModIntro. iFrame. unats.
@@ -126,12 +126,12 @@ Section related.
         rewrite [⟦ () @ L ⟧ₛ _ _ _]interp_sec_def interp_unit_def
                 bool_decide_eq_true_2 //.
       + (* right else branch *)
-        iApply (ic_fupd_bind _ (fill [SeqCtx _])).
-        iApply (ic_fupd_pure_step); [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply (mwp_fupd_bind _ (fill [SeqCtx _])).
+        iApply (mwp_fupd_pure_step); [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
-        iApply ic_fupd_pure_step; [done|].
-        iApply ((@ic_fupd_store _ secG_un_right)); [done|].
+        iApply mwp_fupd_pure_step; [done|].
+        iApply ((@mwp_fupd_store _ secG_un_right)); [done|].
         iFrame. iIntros "Hl2".
         iMod ("HcloseI" with "[-]") as "_".
         { iExists _,_. iModIntro. iFrame. unats.

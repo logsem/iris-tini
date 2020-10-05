@@ -4,8 +4,8 @@ From iris.program_logic Require Export language ectx_language ectxi_language.
 From iris.program_logic Require Import lifting.
 From iris.proofmode Require Import tactics.
 From iris_string_ident Require Import ltac2_string_ident.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lang typing fundamental_unary
      logrel_binary rules_binary.
 
@@ -38,10 +38,10 @@ Section fundamental.
   Notation projl Θ := (Θ.*2.*1 : listO D).
   Notation projr Θ := (Θ.*2.*2 : listO D).
 
-  Local Tactic Notation "smart_ic_bind" uconstr(ctx) ident(v) ident(n)
+  Local Tactic Notation "smart_mwp_bind" uconstr(ctx) ident(v) ident(n)
         ident(x) constr(Hv) constr(Hp) :=
-    iApply (ic_left_strong_bind SI_left SI_right (fill [ctx]) (fill [ctx]));
-    iApply (ic_wand_r with "[-]"); iSplitL; [iApply Hp; iFrame "#"|];
+    iApply (mwp_left_strong_bind SI_left SI_right (fill [ctx]) (fill [ctx]));
+    iApply (mwp_wand_r with "[-]"); iSplitL; [iApply Hp; iFrame "#"|];
     iIntros (v n x) Hv; cbn.
 
   Lemma up_env_subst e vs v :
@@ -66,16 +66,16 @@ Section fundamental.
       move: Hflow => /interp_label_flowsto /(_ ρ) Hflow.
       rewrite !interp_arrow_def !interp_un_arrow_def.
       iIntros (?) "#? #[H1 [H2 H3]]". repeat iSplit; iModIntro.
-      + iIntros (?) "#?". iApply ic_wand_r; iSplitL.
+      + iIntros (?) "#?". iApply mwp_wand_r; iSplitL.
         * iApply "H1". by iApply Hτ1.
         * iIntros (???) "?". cbn. by iApply Hτ2.
       + iIntros (?) "#Hτ1 %".
-        iApply ic_wand_r. iSplitL.
+        iApply mwp_wand_r. iSplitL.
         * iApply "H2"; [by iApply (interp_un_secsubtype with "Hτ1")|].
           iPureIntro. apply: ord_neg_left=>//.
         * iIntros (???) "#Hτ2". by iApply (interp_un_secsubtype with "Hτ2").
       + iIntros (v) "#Hτ1 %".
-        iApply ic_wand_r; iSplitL.
+        iApply mwp_wand_r; iSplitL.
         * iApply "H3"; [by iApply (interp_un_secsubtype with "Hτ1")|].
           iPureIntro. apply: ord_neg_left=>//.
         * iIntros (???) "#Hτ2". by iApply (interp_un_secsubtype with "Hτ2").
@@ -83,15 +83,15 @@ Section fundamental.
       move: Hflow => /interp_label_flowsto /(_ ρ) Hflow.
       rewrite !interp_tforall_def !interp_un_tforall_def.
       iIntros "#Hcoh #[H1 [H2 H3]]". repeat iSplit; iModIntro.
-      + iIntros (τR τi1 τi2 HPb Hτi1 Hτi2) "#Hsum". iApply ic_wand_r; iSplitL.
+      + iIntros (τR τi1 τi2 HPb Hτi1 Hτi2) "#Hsum". iApply mwp_wand_r; iSplitL.
         * by iApply ("H1" $! _ _ _ HPb Hτi1 Hτi2).
         * iIntros (???) "? /=". iApply H; [|done].
           iApply big_sepL_cons; auto.
       + iIntros (???).
-        iApply ic_wand_r; iSplitL.
+        iApply mwp_wand_r; iSplitL.
         * iApply "H2"; auto. iPureIntro. apply: ord_neg_left=>//.
         * iIntros (???) "Hτ0". by iApply (interp_un_secsubtype with "Hτ0").
-      + iIntros (???). iApply ic_wand_r; iSplitL.
+      + iIntros (???). iApply mwp_wand_r; iSplitL.
         * iApply "H3"; eauto. iPureIntro.
           apply: ord_neg_left=>//.
         * iIntros (???) "Hτ0". by iApply (interp_un_secsubtype with "Hτ0").
@@ -99,13 +99,13 @@ Section fundamental.
       move: Hflow => /interp_label_flowsto Hflow.
       rewrite !interp_tlforall_def !interp_un_tlforall_def.
       iIntros "#? #[H1 [H2 H3]]". repeat iSplit; iModIntro.
-      + iIntros (?). iApply ic_wand_r; iSplitL.
+      + iIntros (?). iApply mwp_wand_r; iSplitL.
         * by iApply "H1".
         * iIntros (???) "? /=". by iApply H.
-      + iIntros (??). iApply ic_wand_r; iSplitL.
+      + iIntros (??). iApply mwp_wand_r; iSplitL.
         * iApply "H2". iPureIntro. apply: ord_neg_left; by [apply Hflow|].
         * iIntros (???) "Hτ0 /=". by iApply (interp_un_secsubtype with "Hτ0").
-      + iIntros (??). iApply ic_wand_r; iSplitL.
+      + iIntros (??). iApply mwp_wand_r; iSplitL.
         * iApply "H3". iPureIntro. apply: ord_neg_left; by [apply Hflow|].
         * iIntros (???) "Hτ0". by iApply (interp_un_secsubtype with "Hτ0").
     - iIntros (????? Hτ1 ? Hτ2 ?????) "#Hcoh".
@@ -140,8 +140,8 @@ Section fundamental.
   Lemma bi_log_related_unit Γ : Γ ⊨ Unit ≤ₗ Unit : TUnit @ ⊥ₛ.
   Proof.
     iIntros (????) "[#Hcoh #HΓ]".
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     rewrite interp_sec_def interp_unit_def.
     rewrite bool_decide_eq_true_2; auto.
   Qed.
@@ -149,8 +149,8 @@ Section fundamental.
   Lemma bi_log_related_bool Γ b : Γ ⊨ Bool b ≤ₗ Bool b : TBool @ ⊥ₛ.
   Proof.
     iIntros (????) "[#Hcoh #HΓ]".
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     rewrite interp_sec_def interp_bool_def.
     rewrite bool_decide_eq_true_2; auto.
   Qed.
@@ -158,8 +158,8 @@ Section fundamental.
   Lemma bi_log_related_nat Γ n : Γ ⊨ Nat n ≤ₗ Nat n : TNat @ ⊥ₛ.
   Proof.
     iIntros (????) "[#Hcoh #HΓ]".
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     rewrite interp_sec_def interp_nat_def.
     rewrite bool_decide_eq_true_2; auto.
   Qed.
@@ -170,8 +170,8 @@ Section fundamental.
     iIntros (Hx Θ ρ vvs ?) "[#Hcoh #HΓ] /=".
     iDestruct (interp_env_Some_l with "HΓ") as ([v v']) "[%Heq Hv]"; [done|].
     erewrite !env_subst_lookup; rewrite ?list_lookup_fmap ?Heq /=; auto.
-    iApply (ic_value ic_binary); umods.
-    by iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    by iApply (mwp_value (mwpd_right SI_right)); umods.
   Qed.
 
   Lemma bi_log_related_lam Γ ℓₑ e e' τ1 τ2
@@ -181,29 +181,29 @@ Section fundamental.
     : Γ ⊨ Lam e ≤ₗ Lam e' : TArrow ℓₑ τ1 τ2 @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]". rewrite /interp_expr.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     rewrite interp_sec_def interp_arrow_def.
     rewrite bool_decide_eq_true_2; [|by apply ord_bottom].
     iModIntro. rewrite !interp_un_arrow_def.
     repeat iSplit; iModIntro.
     - iIntros ([w1 w2]) "#Hww".
       iDestruct (interp_env_length with "HΓ") as %?.
-      iApply ic_left_pure_step; [done|]. iNext.
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]. iNext.
+      iApply mwp_left_pure_step_index; [done|].
       rewrite !up_env_subst.
-      iApply (ic_wand_r ic_binary); iSplitL.
+      iApply (mwp_wand_r mwp_binary); iSplitL.
       { iApply (IHtyped _ _ ((w1, w2) :: _)). iFrame "#".
         iApply (interp_env_cons with "[$]"). }
       by iIntros (?? []) "? /=".
     - iIntros (v) "Hv %".
-      iApply ic_step_fupd_pure_step; [done|]. iNext.
+      iApply mwp_step_fupd_pure_step; [done|]. iNext.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[HΓ1 _]".
       iDestruct (interp_un_env_cons with "[$Hv $HΓ1]") as "#HΓ'".
       rewrite up_env_subst.
       by iApply (fundamental_un with "HΓ'").
     - iIntros (v) "Hv %".
-      iApply ic_step_fupd_pure_step; [done|]. iNext.
+      iApply mwp_step_fupd_pure_step; [done|]. iNext.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[_ HΓ2]".
       iDestruct (interp_un_env_cons with "[$Hv $HΓ2]") as "#HΓ'".
       rewrite up_env_subst.
@@ -216,17 +216,17 @@ Section fundamental.
     : Γ ⊨ BinOp op e1 e2 ≤ₗ BinOp op e1' e2' : (binop_type op) @ (ℓ1 ⊔ₛ ℓ2).
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind (BinOpLCtx _ _) v n x "#Hv" IHtyped1.
-    smart_ic_bind (BinOpRCtx _ _) w m y "#Hw" IHtyped2.
+    smart_mwp_bind (BinOpLCtx _ _) v n x "#Hv" IHtyped1.
+    smart_mwp_bind (BinOpRCtx _ _) w m y "#Hw" IHtyped2.
     destruct (decide (⌊ ℓ1 ⌋ₗ ρ ⊔ ⌊ ℓ2 ⌋ₗ ρ ⊑ ζ)) as [Hflow|Hnflow].
     - destruct (join_ord_inv _ _ _ Hflow) as [? ?].
       rewrite !interp_sec_def !interp_nat_def ?bool_decide_eq_true_2 //=.
       iDestruct "Hv" as (? b1 -> ->) "->".
       iDestruct "Hw" as (? b2 -> ->) "->".
-      iApply ic_left_pure_step; [done|]. iNext.
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value (icd_right SI_right)); umods.
+      iApply mwp_left_pure_step; [done|]. iNext.
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value (mwpd_right SI_right)); umods.
       rewrite interp_sec_def bool_decide_eq_true_2 //.
       destruct op; simpl; rewrite ?interp_bool_def ?interp_nat_def;
         try case_bool_decide; eauto.
@@ -235,10 +235,10 @@ Section fundamental.
       rewrite !interp_un_sec_def !interp_un_nat_def.
       iDestruct "Hv1" as (b1) "->". iDestruct "Hv2" as (b1') "->".
       iDestruct "Hw1" as (b2) "->". iDestruct "Hw2" as (b2') "->".
-      iApply ic_left_pure_step; [done|]. iNext.
-      iApply ic_left_pure_step_index; [done|].
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value (icd_right SI_right)); umods.
+      iApply mwp_left_pure_step; [done|]. iNext.
+      iApply mwp_left_pure_step_index; [done|].
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value (mwpd_right SI_right)); umods.
       iEval (rewrite interp_sec_def).
       rewrite bool_decide_eq_false_2 // !interp_un_sec_def.
       destruct op; simpl; rewrite ?interp_un_bool_def ?interp_un_nat_def;
@@ -253,8 +253,8 @@ Section fundamental.
   : Γ ⊨ App e1 e2 ≤ₗ App e1' e2' : τ2.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind (AppLCtx _) v n x "#Hv" IHtyped1.
-    smart_ic_bind (AppRCtx _) w m y "#Hw" IHtyped2.
+    smart_mwp_bind (AppLCtx _) v n x "#Hv" IHtyped1.
+    smart_mwp_bind (AppRCtx _) w m y "#Hw" IHtyped2.
     destruct τ2 as [ℓ' t2]. rewrite interp_sec_def interp_arrow_def.
     case_bool_decide as Hflow.
     - iDestruct "Hv" as "[#Hv _]". by iApply ("Hv" with "Hw").
@@ -263,12 +263,12 @@ Section fundamental.
       move: Hflow2=> /interp_label_join_ord_inv /(_ ρ) [Hflow2 Hflow3].
       iDestruct (secbin_subsumes_secun with "[$Hcoh $Hw]") as "#[Hw1 Hw2] /=".
       rewrite !interp_un_sec_def !interp_un_arrow_def.
-      iApply ic_un_bi_lr.
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_un_bi_lr.
+      iApply mwp_wand_r; iSplitL.
       { iApply ("Hv1" with "Hw1").
         iPureIntro. by eapply ord_neg_left. }
       iIntros (???) "#? /=".
-      iApply (ic_wand_r (icd_step_fupd SI_right)).
+      iApply (mwp_wand_r (mwpd_step_fupd SI_right)).
       iSplitL.
       { iApply ("Hv2" with "Hw2").
         iPureIntro. by eapply ord_neg_left. }
@@ -283,9 +283,9 @@ Section fundamental.
     : Γ ⊨ LetIn e1 e2 ≤ₗ LetIn e1' e2' : τ2.
   Proof.
     iIntros (????) "[#? #HΓ]".
-    smart_ic_bind (LetInCtx _) v k x "#Hv" IHtyped1.
-    iApply ic_left_pure_step; [done|]. iNext.
-    iApply ic_left_pure_step_index; [done|]. cbn.
+    smart_mwp_bind (LetInCtx _) v k x "#Hv" IHtyped1.
+    iApply mwp_left_pure_step; [done|]. iNext.
+    iApply mwp_left_pure_step_index; [done|]. cbn.
     rewrite !up_env_subst.
     iApply (IHtyped2 _ _ ((_,_) :: vvs)).
     iFrame "#".
@@ -298,9 +298,9 @@ Section fundamental.
     : Γ ⊨ Seq e1 e2 ≤ₗ Seq e1' e2' : τ2.
   Proof.
     iIntros (????) "[#? #HΓ]".
-    smart_ic_bind (SeqCtx _) v k x "#Hv" IHtyped1.
-    iApply ic_left_pure_step; [done|]. iNext.
-    iApply ic_left_pure_step_index; [done|]. cbn.
+    smart_mwp_bind (SeqCtx _) v k x "#Hv" IHtyped1.
+    iApply mwp_left_pure_step; [done|]. iNext.
+    iApply mwp_left_pure_step_index; [done|]. cbn.
     iApply IHtyped2; auto.
   Qed.
 
@@ -311,23 +311,23 @@ Section fundamental.
     : Γ ⊨ TLam e ≤ₗ TLam e' : TForall ℓₑ τ @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     rewrite interp_sec_def interp_tforall_def !interp_un_tforall_def.
     rewrite bool_decide_eq_true_2; [|by apply ord_bottom].
     iModIntro. repeat iSplit; iModIntro.
     - iIntros (tR τi1 τi2 ???) "#Hsub".
-      iApply ic_left_pure_step; [done|]. iNext.
-      iApply ic_left_pure_step_index; [done|]. cbn.
+      iApply mwp_left_pure_step; [done|]. iNext.
+      iApply mwp_left_pure_step_index; [done|]. cbn.
       iApply IHtyped. iSplit; last by iApply interp_bi_env_ren.
       iApply big_sepL_cons; iFrame "#".
     - iIntros (???).
-      iApply ic_step_fupd_pure_step; [done|]. iNext.
+      iApply mwp_step_fupd_pure_step; [done|]. iNext.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[HΓ1 _]".
       iDestruct (interp_un_env_ren with "HΓ1") as "HΓ1'".
       by iApply (fundamental_un with "HΓ1'").
     - iIntros (???).
-      iApply ic_step_fupd_pure_step; [done|]. iNext.
+      iApply mwp_step_fupd_pure_step; [done|]. iNext.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[_ HΓ2]".
       iDestruct (interp_un_env_ren with "HΓ2") as "HΓ2'".
       by iApply (fundamental_un with "HΓ2'").
@@ -340,11 +340,11 @@ Section fundamental.
     : Γ ⊨ TApp e ≤ₗ TApp e' : τ.|[t'/].
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind (TAppCtx) v n x "#Hv" IHtyped.
+    smart_mwp_bind (TAppCtx) v n x "#Hv" IHtyped.
     rewrite interp_sec_def interp_tforall_def.
     case_bool_decide as Hflow.
     - iDestruct "Hv" as "#(Hbin & _ & _)".
-      iApply (ic_wand_r ic_binary); iSplitL.
+      iApply (mwp_wand_r mwp_binary); iSplitL.
       { iApply ("Hbin" $! (⟦ t' ⟧ Θ ρ)
                        (⌊ t' ₗ⌋ (projl Θ) ρ) (⌊ t' ᵣ⌋ (projr Θ) ρ));
           try (iPureIntro; apply _).
@@ -358,12 +358,12 @@ Section fundamental.
       move: Hflow2=> /interp_label_join_ord_inv /(_ ρ) [Hflow2 Hflow3].
       move: (ord_neg_left _ _ _ Hflow1 Hflow)=>?.
       move: (ord_neg_left _ _ _ Hflow3 Hflow)=>?.
-      iApply ic_un_bi_lr.
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_un_bi_lr.
+      iApply mwp_wand_r; iSplitL.
       { iApply ("Hv1" $! (⌊ t' ₗ⌋ (projl Θ) ρ)); [|done].
         iPureIntro; apply _. }
       iIntros (???) "#Ht1".
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_wand_r; iSplitL.
       { iApply ("Hv2" $! (⌊ t' ᵣ⌋ (projr Θ) ρ)); [|done].
         iPureIntro; apply _. }
       iIntros (???) "#Ht2". asimpl. rewrite interp_sec_def.
@@ -378,23 +378,23 @@ Section fundamental.
     : Γ ⊨ TLLam e ≤ₗ TLLam e' : TLForall ℓₑ τ @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     rewrite interp_sec_def interp_tlforall_def
             !interp_un_sec_def !interp_un_tlforall_def.
     rewrite bool_decide_eq_true_2; [|by apply ord_bottom].
     iModIntro. repeat iSplit; iModIntro.
     - iIntros (?).
-      iApply ic_left_pure_step; [done|]. iNext.
-      iApply ic_left_pure_step_index; [done|]. cbn.
+      iApply mwp_left_pure_step; [done|]. iNext.
+      iApply mwp_left_pure_step_index; [done|]. cbn.
       iApply IHtyped. iFrame "#". by iApply interp_bi_env_label_ren.
     - iIntros (??).
-      iApply ic_step_fupd_pure_step; [done|]. iNext.
+      iApply mwp_step_fupd_pure_step; [done|]. iNext.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[HΓ1 _]".
       iDestruct (interp_un_env_label_ren with "HΓ1") as "HΓ1'".
       by iApply (fundamental_un with "HΓ1'").
     - iIntros (ℓ ?).
-      iApply ic_step_fupd_pure_step; [done|]. iNext.
+      iApply mwp_step_fupd_pure_step; [done|]. iNext.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[_ HΓ2]".
       iDestruct (interp_un_env_label_ren with "HΓ2") as "HΓ2'".
       by iApply (fundamental_un with "HΓ2'").
@@ -407,11 +407,11 @@ Section fundamental.
     : Γ ⊨ TLApp e ≤ₗ TLApp e' : τ.|[ℓ'/].
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind (TLAppCtx) v n x "#Hv" IHtyped.
+    smart_mwp_bind (TLAppCtx) v n x "#Hv" IHtyped.
     rewrite interp_sec_def interp_tlforall_def.
     case_bool_decide as Hflow.
     - iDestruct "Hv" as "#(Hbin & _)".
-      iApply (ic_wand_r ic_binary); iSplitL.
+      iApply (mwp_wand_r mwp_binary); iSplitL.
       { iApply ("Hbin" $! (⌊ ℓ' ⌋ₗ ρ)). }
       iIntros (???) "#Hτ /=".
       by iApply (interp_sec_bi_label_subst_up _ _ _ []).
@@ -423,12 +423,12 @@ Section fundamental.
       move: (ord_neg_left _ _ _ Hflow1 Hflow)=>Hflow4.
       move: (ord_neg_left _ _ _ Hflow3 Hflow)=>Hflow5.
       move: (ord_neg_left _ _ _ Hflow1 Hflow)=>Hflow6.
-      iApply ic_un_bi_lr.
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_un_bi_lr.
+      iApply mwp_wand_r; iSplitL.
       { iApply ("Hv1" $! (⌊ ℓ' ⌋ₗ ρ)). iPureIntro.
         rewrite -interp_label_subst1 //. }
       iIntros (???) "#Ht1".
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_wand_r; iSplitL.
       { iApply ("Hv2" $! (⌊ ℓ' ⌋ₗ ρ)). iPureIntro.
         rewrite -interp_label_subst1 //. }
       iIntros (???) "#Ht2 /=". asimpl.
@@ -448,62 +448,62 @@ Section fundamental.
     : Γ ⊨ If e e1 e2 ≤ₗ If e' e1' e2' : τ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ] /=".
-    smart_ic_bind (IfCtx _ _) v n x "#Hv" IHtyped.
+    smart_mwp_bind (IfCtx _ _) v n x "#Hv" IHtyped.
     rewrite interp_sec_def interp_bool_def /=.
     case_bool_decide as Hflow'.
     - iDestruct "Hv" as (b1 []) "(-> & -> & ->)".
-      + iApply ic_left_pure_step; [done|]. iNext.
-        iApply ic_left_pure_step_index; [done|].
-        iApply ic_wand_r; iSplitL; [iApply IHtyped1; iFrame "#"|].
+      + iApply mwp_left_pure_step; [done|]. iNext.
+        iApply mwp_left_pure_step_index; [done|].
+        iApply mwp_wand_r; iSplitL; [iApply IHtyped1; iFrame "#"|].
         iIntros (w m []) "Ht /=".
         by iApply (interp_secsubtype with "Hcoh Ht").
-      + iApply ic_left_pure_step; [done|]. iNext.
-        iApply ic_left_pure_step_index; [done|].
-        iApply ic_wand_r; iSplitL; [iApply IHtyped2; iFrame "#"|].
+      + iApply mwp_left_pure_step; [done|]. iNext.
+        iApply mwp_left_pure_step_index; [done|].
+        iApply mwp_wand_r; iSplitL; [iApply IHtyped2; iFrame "#"|].
         iIntros (w m []) "Ht /=".
         by iApply (interp_secsubtype with "Hcoh Ht").
     - rewrite !interp_un_sec_def !interp_un_bool_def.
       iDestruct "Hv" as "[Hv Hx1]".
       iDestruct "Hv" as (b1) "->". iDestruct "Hx1" as (b2) "->".
       destruct b1, b2.
-      + iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
-        iApply ic_wand_r; iSplitL; [iApply IHtyped1; iFrame "#"|].
+      + iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
+        iApply mwp_wand_r; iSplitL; [iApply IHtyped1; iFrame "#"|].
         iIntros (w m []) "Ht /=".
         by iApply (interp_secsubtype with "Hcoh Ht").
-      + iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
-        iApply ic_un_bi_lr. cbn.
+      + iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
+        iApply mwp_un_bi_lr. cbn.
         iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[#HΓr #HΓl]".
-        iApply (ic_wand_r (icd_step_fupd SI_left)). iSplitL.
+        iApply (mwp_wand_r (mwpd_step_fupd SI_left)). iSplitL.
         { iApply (fundamental_un with "HΓr"); [done|].
           iPureIntro. by apply ord_join_neg_right. }
         iIntros (v m y) "Hv".
-        iApply (ic_wand_r (icd_step_fupd SI_right)). iSplitR.
+        iApply (mwp_wand_r (mwpd_step_fupd SI_right)). iSplitR.
         { iApply (fundamental_un with "HΓl"); [done|].
           iPureIntro. by apply ord_join_neg_right. }
         iIntros (w k z) "Hw". destruct τ.
         rewrite interp_sec_def bool_decide_eq_false_2; auto.
         move: Hflow => /interp_label_flowsto /(_ ρ) Hflow.
         apply: ord_neg_left=>//.
-      + iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
-        iApply ic_un_bi_lr; cbn.
+      + iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
+        iApply mwp_un_bi_lr; cbn.
         iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[#HΓr #HΓl]".
-        iApply (ic_wand_r (icd_step_fupd SI_left)). iSplitL.
+        iApply (mwp_wand_r (mwpd_step_fupd SI_left)). iSplitL.
         { iApply (fundamental_un with "HΓr"); [done|].
           iPureIntro. by apply ord_join_neg_right. }
         iIntros (v m y) "Hv".
-        iApply (ic_wand_r (icd_step_fupd SI_right)). iSplitR.
+        iApply (mwp_wand_r (mwpd_step_fupd SI_right)). iSplitR.
         { iApply (fundamental_un with "HΓl"); [done|].
           iPureIntro. by apply ord_join_neg_right. }
         iIntros (w k z) "Hw". destruct τ.
         rewrite interp_sec_def bool_decide_eq_false_2; auto.
         move: Hflow => /interp_label_flowsto /(_ ρ) Hflow.
         apply: ord_neg_left=>//.
-      + iApply ic_left_pure_step; [done|]. iNext.
-        iApply ic_left_pure_step_index; [done|].
-        iApply ic_wand_r; iSplitL; [iApply IHtyped2; iFrame "#"|].
+      + iApply mwp_left_pure_step; [done|]. iNext.
+        iApply mwp_left_pure_step_index; [done|].
+        iApply mwp_wand_r; iSplitL; [iApply IHtyped2; iFrame "#"|].
         iIntros (w m []) "Ht /=".
         by iApply (interp_secsubtype with "Hcoh Ht").
   Qed.
@@ -514,10 +514,10 @@ Section fundamental.
         : Γ ⊨ Pair e1 e2 ≤ₗ Pair e1' e2' : TProd τ1 τ2 @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind (PairLCtx _) v1 n x "#Hv1" IHtyped1.
-    smart_ic_bind (PairRCtx _) v2 m y "#Hv2" IHtyped2.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    smart_mwp_bind (PairLCtx _) v1 n x "#Hv1" IHtyped1.
+    smart_mwp_bind (PairRCtx _) v2 m y "#Hv2" IHtyped2.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     iModIntro. iEval (rewrite interp_sec_def).
     rewrite !interp_prod_def bool_decide_eq_true_2; [|by apply ord_bottom].
     iExists _, _, _, _. auto.
@@ -529,7 +529,7 @@ Section fundamental.
     : Γ ⊨ Proj1 e ≤ₗ Proj1 e' : τ1.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ] /=".
-    smart_ic_bind Proj1Ctx v1 m y "#Hw" IHtyped.
+    smart_mwp_bind Proj1Ctx v1 m y "#Hw" IHtyped.
     destruct τ1 as [ℓ1 t1].
     rewrite interp_sec_def interp_prod_def /=.
     destruct (bool_decide (⌊ ℓ1 ⌋ₗ ρ ⊑ ζ)) eqn:Hflow2.
@@ -537,29 +537,29 @@ Section fundamental.
       move: Hflow2 => /bool_decide_eq_true_1 ?.
       rewrite !bool_decide_eq_true_2 //; last by etransitivity.
       iDestruct "Hw" as (????) "(-> & -> & Ht1 & Hτ2)".
-      iApply ic_left_pure_step; [done|]; iNext.
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]; iNext.
+      iApply mwp_left_pure_step_index; [done|].
       rewrite -/of_val /=.
-      iApply (ic_value ic_binary); umods.
-      by iApply (ic_value (icd_right SI_right)); umods.
+      iApply (mwp_value mwp_binary); umods.
+      by iApply (mwp_value (mwpd_right SI_right)); umods.
     - move: Hflow2 => /bool_decide_eq_false_1 ?.
       destruct (bool_decide (⌊ ℓ ⌋ₗ ρ ⊑ ζ)).
       + iDestruct "Hw" as (????) "(-> & -> & Ht1 & Hτ2)".
-        iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
+        iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
         rewrite -/of_val /=.
-        iApply (ic_value ic_binary); umods.
-        iApply (ic_value (icd_right SI_right)); umods; iModIntro.
+        iApply (mwp_value mwp_binary); umods.
+        iApply (mwp_value (mwpd_right SI_right)); umods; iModIntro.
         iFrame "#".
       + iDestruct "Hw" as "[Hv1 Hv2]".
         rewrite !interp_un_sec_def !interp_un_prod_def.
         iDestruct "Hv1" as (??) "(-> & Ht1 & ?)".
         iDestruct "Hv2" as (??) "(-> & Ht1' & ?)".
-        iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
+        iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
         rewrite -/of_val /=.
-        iApply (ic_value ic_binary); umods.
-        iApply (ic_value (icd_right SI_right)); umods.
+        iApply (mwp_value mwp_binary); umods.
+        iApply (mwp_value (mwpd_right SI_right)); umods.
         rewrite interp_sec_def bool_decide_eq_false_2; auto.
   Qed.
 
@@ -569,7 +569,7 @@ Section fundamental.
     : Γ ⊨ Proj2 e ≤ₗ Proj2 e' : τ2.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind Proj2Ctx v1 m y "#Hw" IHtyped.
+    smart_mwp_bind Proj2Ctx v1 m y "#Hw" IHtyped.
     destruct τ2 as [ℓ2 t2].
     rewrite interp_sec_def interp_prod_def /=.
     destruct (bool_decide (⌊ ℓ2 ⌋ₗ ρ ⊑ ζ)) eqn:Hflow2.
@@ -577,29 +577,29 @@ Section fundamental.
       move: Hflow2 => /bool_decide_eq_true_1 ?.
       rewrite !bool_decide_eq_true_2 //; last by etransitivity.
       iDestruct "Hw" as (????) "(-> & -> & Ht1 & Hτ2)".
-      iApply ic_left_pure_step; [done|]; iNext.
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]; iNext.
+      iApply mwp_left_pure_step_index; [done|].
       rewrite -/of_val /=.
-      iApply (ic_value ic_binary); umods.
-      by iApply (ic_value (icd_right SI_right)); umods.
+      iApply (mwp_value mwp_binary); umods.
+      by iApply (mwp_value (mwpd_right SI_right)); umods.
     - move: Hflow2 => /bool_decide_eq_false_1 ?.
       destruct (bool_decide (⌊ ℓ ⌋ₗ ρ ⊑ ζ)).
       + iDestruct "Hw" as (????) "(-> & -> & Ht1 & Hτ2)".
-        iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
+        iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
         rewrite -/of_val /=.
-        iApply (ic_value ic_binary); umods.
-        iApply (ic_value (icd_right SI_right)); umods; iModIntro.
+        iApply (mwp_value mwp_binary); umods.
+        iApply (mwp_value (mwpd_right SI_right)); umods; iModIntro.
         iFrame "#".
       + iDestruct "Hw" as "[Hv1 Hv2]".
         rewrite !interp_un_sec_def !interp_un_prod_def.
         iDestruct "Hv1" as (??) "(-> & Ht1 & ?)".
         iDestruct "Hv2" as (??) "(-> & Ht1' & ?)".
-        iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
+        iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
         rewrite -/of_val /=.
-        iApply (ic_value ic_binary); umods.
-        iApply (ic_value (icd_right SI_right)); umods.
+        iApply (mwp_value mwp_binary); umods.
+        iApply (mwp_value (mwpd_right SI_right)); umods.
         rewrite interp_sec_def bool_decide_eq_false_2; auto.
   Qed.
 
@@ -615,7 +615,7 @@ Section fundamental.
         : Γ ⊨ Case e e1 e2 ≤ₗ Case e' e1' e2' : τ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind (CaseCtx _ _) w m y "#Hw" IHtyped.
+    smart_mwp_bind (CaseCtx _ _) w m y "#Hw" IHtyped.
     destruct τ as [ℓ' t]. destruct y.
     rewrite interp_sec_def interp_sum_def /=.
     destruct (bool_decide (⌊ ℓ' ⌋ₗ ρ ⊑ ζ)) eqn:Hflow2.
@@ -623,19 +623,19 @@ Section fundamental.
       move: Hflow2 => /bool_decide_eq_true_1 Hflow2.
       rewrite !bool_decide_eq_true_2 //; last by etransitivity.
       iDestruct "Hw" as (w1 w2) "[[% H2] | [% H2]]"; simplify_eq.
-      + iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
+      + iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
         rewrite -/of_val /= !up_env_subst.
-        iApply (ic_wand_r ic_binary). iSplitL.
+        iApply (mwp_wand_r mwp_binary). iSplitL.
         { iApply (IHtyped1 _ _ ((w1,w2) :: vvs)). iFrame "#".
           iApply (interp_env_cons with "[$]"). }
         iIntros (?? []) "Hw /=".
         rewrite !interp_sec_def bool_decide_eq_true_2 //.
       + (* symmetric to previous case *)
-        iApply ic_left_pure_step; [done|]; iNext.
-        iApply ic_left_pure_step_index; [done|].
+        iApply mwp_left_pure_step; [done|]; iNext.
+        iApply mwp_left_pure_step_index; [done|].
         rewrite -/of_val /= !up_env_subst.
-        iApply (ic_wand_r ic_binary). iSplitL.
+        iApply (mwp_wand_r mwp_binary). iSplitL.
         { iApply (IHtyped2 _ _ ((w1,w2) :: vvs)). iFrame "#".
           iApply (interp_env_cons with "[$]"). }
         iIntros (?? []) "Hw /=".
@@ -644,19 +644,19 @@ Section fundamental.
       destruct (bool_decide (⌊ ℓ ⌋ₗ ρ ⊑ ζ)) eqn:Hflow3.
       + move: Hflow3 => /bool_decide_eq_true_1 Hflow3.
         iDestruct "Hw" as (w1 w2) "[[% Hτ1] | [% Hτ2]]"; simplify_eq.
-        * iApply ic_left_pure_step; [done|]; iNext.
-          iApply ic_left_pure_step_index; [done|].
+        * iApply mwp_left_pure_step; [done|]; iNext.
+          iApply mwp_left_pure_step_index; [done|].
           rewrite -/of_val /=. rewrite !up_env_subst.
-          iApply (ic_wand_r ic_binary). iSplitL.
+          iApply (mwp_wand_r mwp_binary). iSplitL.
           { iApply (IHtyped1 _ _ ((w1,w2) :: vvs)). iFrame "#".
             iApply (interp_env_cons with "[$]"). }
           iIntros (?? []) "Hw /=".
           rewrite !interp_sec_def !bool_decide_eq_false_2 //.
         * (* symmetric to previous case *)
-          iApply ic_left_pure_step; [done|]; iNext.
-          iApply ic_left_pure_step_index; [done|].
+          iApply mwp_left_pure_step; [done|]; iNext.
+          iApply mwp_left_pure_step_index; [done|].
           rewrite -/of_val /= !up_env_subst.
-          iApply (ic_wand_r ic_binary). iSplitL.
+          iApply (mwp_wand_r mwp_binary). iSplitL.
           { iApply (IHtyped2 _ _ ((w1,w2) :: vvs)). iFrame "#".
             iApply (interp_env_cons with "[$]"). }
           iIntros (?? []) "Hw /=".
@@ -671,54 +671,54 @@ Section fundamental.
           iDestruct (interp_un_env_cons with "[$Hv $HΓl]") as "#HΓl'";
           iDestruct (interp_un_env_cons with "[$Hw $HΓr]") as "#HΓr'".
         (* all four cases are symmetric *)
-        * iApply ic_left_pure_step_index; [done|].
-          iApply ic_left_pure_step; [done|]; iNext.
+        * iApply mwp_left_pure_step_index; [done|].
+          iApply mwp_left_pure_step; [done|]; iNext.
           rewrite -/of_val /= !up_env_subst.
-          iApply ic_un_bi_lr. cbn.
-          iApply (ic_wand_r (icd_step_fupd SI_left)). iSplitL.
+          iApply mwp_un_bi_lr. cbn.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_left)). iSplitL.
           { iApply (fundamental_un with "HΓl'"); [done|].
             iPureIntro. by apply ord_join_neg_right. }
           iIntros (???) "#?".
-          iApply (ic_wand_r (icd_step_fupd SI_right)). iSplitR.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_right)). iSplitR.
           { iApply (fundamental_un with "HΓr'"); [done|].
             iPureIntro. by eapply ord_join_neg_right. }
           iIntros (???) "#?".
           rewrite !interp_sec_def bool_decide_eq_false_2; auto.
-        * iApply ic_left_pure_step_index; [done|].
-          iApply ic_left_pure_step; [done|]; iNext.
+        * iApply mwp_left_pure_step_index; [done|].
+          iApply mwp_left_pure_step; [done|]; iNext.
           rewrite -/of_val /= !up_env_subst.
-          iApply ic_un_bi_lr; cbn.
-          iApply (ic_wand_r (icd_step_fupd SI_left)). iSplitL.
+          iApply mwp_un_bi_lr; cbn.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_left)). iSplitL.
           { iApply (fundamental_un with "HΓl'"); [done|].
             iPureIntro. by apply ord_join_neg_right. }
           iIntros (???) "#?".
-          iApply (ic_wand_r (icd_step_fupd SI_right)). iSplitR.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_right)). iSplitR.
           { iApply (fundamental_un with "HΓr'"); [done|].
             iPureIntro. by eapply ord_join_neg_right. }
           iIntros (???) "#?".
           rewrite !interp_sec_def bool_decide_eq_false_2; auto.
-        * iApply ic_left_pure_step_index; [done|].
-          iApply ic_left_pure_step; [done|]; iNext.
+        * iApply mwp_left_pure_step_index; [done|].
+          iApply mwp_left_pure_step; [done|]; iNext.
           rewrite -/of_val /= !up_env_subst.
-          iApply ic_un_bi_lr; cbn.
-          iApply (ic_wand_r (icd_step_fupd SI_left)). iSplitL.
+          iApply mwp_un_bi_lr; cbn.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_left)). iSplitL.
           { iApply (fundamental_un with "HΓl'"); [done|].
             iPureIntro. by apply ord_join_neg_right. }
           iIntros (???) "#?".
-          iApply (ic_wand_r (icd_step_fupd SI_right)). iSplitR.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_right)). iSplitR.
           { iApply (fundamental_un with "HΓr'"); [done|].
             iPureIntro. by eapply ord_join_neg_right. }
           iIntros (???) "#?".
           rewrite !interp_sec_def bool_decide_eq_false_2; auto.
-        * iApply ic_left_pure_step_index; [done|].
-          iApply ic_left_pure_step; [done|]; iNext.
+        * iApply mwp_left_pure_step_index; [done|].
+          iApply mwp_left_pure_step; [done|]; iNext.
           rewrite -/of_val /= !up_env_subst.
-          iApply ic_un_bi_lr; cbn.
-          iApply (ic_wand_r (icd_step_fupd SI_left)). iSplitL.
+          iApply mwp_un_bi_lr; cbn.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_left)). iSplitL.
           { iApply (fundamental_un with "HΓl'"); [done|].
             iPureIntro. by apply ord_join_neg_right. }
           iIntros (???) "#?".
-          iApply (ic_wand_r (icd_step_fupd SI_right)). iSplitR.
+          iApply (mwp_wand_r (mwpd_step_fupd SI_right)). iSplitR.
           { iApply (fundamental_un with "HΓr'"); [done|].
             iPureIntro. by eapply ord_join_neg_right. }
           iIntros (???) "#?".
@@ -730,9 +730,9 @@ Section fundamental.
     : Γ ⊨ InjL e ≤ₗ InjL e' : TSum τ1 τ2 @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind InjLCtx w m y "#Hw" IHtyped.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    smart_mwp_bind InjLCtx w m y "#Hw" IHtyped.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     iModIntro. iEval (rewrite interp_sec_def).
     rewrite interp_sum_def bool_decide_eq_true_2; auto.
   Qed.
@@ -742,9 +742,9 @@ Section fundamental.
     : Γ ⊨ InjR e ≤ₗ InjR e' : TSum τ1 τ2 @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs Henv) "[#Hcoh #HΓ]".
-    smart_ic_bind InjRCtx w m y "#Hw" IHtyped.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    smart_mwp_bind InjRCtx w m y "#Hw" IHtyped.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     iModIntro. iEval (rewrite interp_sec_def).
     rewrite interp_sum_def bool_decide_eq_true_2; auto.
   Qed.
@@ -755,7 +755,7 @@ Section fundamental.
     : Γ ⊨ e ≤ₗ e' : τ.
   Proof.
     iIntros (Θ ρ vvs Henv) "[#Hcoh #HΓ]".
-    iApply ic_wand_r; iSplitL; [iApply IHtyped; iFrame "#"|].
+    iApply mwp_wand_r; iSplitL; [iApply IHtyped; iFrame "#"|].
     iIntros (???) "? /=".
     by iApply interp_secsubtype.
   Qed.
@@ -766,12 +766,12 @@ Section fundamental.
     : Γ ⊨ Alloc e ≤ₗ Alloc e' : TRef τ @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs Henv) "[#Hcoh #HΓ]".
-    smart_ic_bind AllocCtx v n x "#Hv" IHtyped.
-    iApply (ic_fupd (icd_left SI_left SI_right)).
-    iApply ic_un_bi_lr.
-    iApply ((@ic_step_fupd_alloc _ secG_un_left) with "[//]").
+    smart_mwp_bind AllocCtx v n x "#Hv" IHtyped.
+    iApply (mwp_fupd (mwpd_left SI_left SI_right)).
+    iApply mwp_un_bi_lr.
+    iApply ((@mwp_step_fupd_alloc _ secG_un_left) with "[//]").
     iNext. iIntros (l1) "Hl1".
-    iApply ((@ic_step_fupd_alloc _ secG_un_right) with "[//]").
+    iApply ((@mwp_step_fupd_alloc _ secG_un_right) with "[//]").
     iNext. iIntros (l2) "Hl2 /=".
     rewrite [⟦ TRef τ @ ⊥ₛ ⟧ₛ _ _ _]interp_sec_def interp_ref_def.
     rewrite bool_decide_eq_true_2; last auto.
@@ -789,20 +789,20 @@ Section fundamental.
     : Γ ⊨ Store e1 e2 ≤ₗ Store e1' e2' : TUnit @ ⊥ₛ.
   Proof.
     iIntros (Θ ρ vvs Henv) "[#Hcoh #Γ]".
-    smart_ic_bind (StoreLCtx _) v n x "#Href" IHtyped1.
-    smart_ic_bind (StoreRCtx _) v1' m y "#Hv'" IHtyped2.
+    smart_mwp_bind (StoreLCtx _) v n x "#Href" IHtyped1.
+    smart_mwp_bind (StoreRCtx _) v1' m y "#Hv'" IHtyped2.
     iDestruct (secbin_subsumes_secun with "[$Hcoh $Hv']") as "#[? ?]".
     rewrite [⟦ TRef τ @ _ ⟧ₛ _ _ _]interp_sec_def interp_ref_def.
     case_bool_decide as Hflow'.
     - iDestruct "Href" as ([l1 l2]) "[% #Hinv]".
       destruct x, y as [v2' ?]. iSimplifyEq.
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
       iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
       iModIntro.
-      iApply ((@ic_step_fupd_store _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_store _ secG_un_right) with "[//]").
+      iApply ((@mwp_fupd_store _ secG_un_right) with "[//]").
       iFrame. iIntros "Hl2".
       iMod ("HcloseI" with "[Hl1 Hl2]") as "_".
       { iNext. iExists _,_. iFrame; iFrame "#". }
@@ -814,25 +814,25 @@ Section fundamental.
       iDestruct "Href2" as (N2 l2 ->) "H2".
       move: Hflow => /interp_label_join_ord_inv /(_ ρ) [Hflow1 Hflow2].
       rewrite bool_decide_eq_false_2; last by eapply ord_neg_left.
-      iApply ic_un_bi_lr.
-      iApply (ic_atomic ((icd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
+      iApply mwp_un_bi_lr.
+      iApply (mwp_atomic ((mwpd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
       iMod ("H1" with "[]") as "[Hl1 HcloseI1]"; first solve_ndisj.
       iDestruct "Hl1" as (w1) "[Hl1 #Hw1]".
       iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
       iModIntro.
-      iApply ((@ic_step_fupd_store _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
       rewrite !interp_un_sec_def.
       iMod "Hclose" as "_".
       iMod ("HcloseI1" with "[Hl1]") as "_".
       { iNext. iExists _. iFrame; iFrame "#". }
       iModIntro.
-      iApply (ic_atomic ((icd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
+      iApply (mwp_atomic ((mwpd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
       iMod ("H2" with "[]") as "[Hl2 HcloseI2]"; first solve_ndisj.
       iDestruct "Hl2" as (w2) "[Hl2 #Hw2]".
       iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
       iModIntro.
-      iApply ((@ic_step_fupd_store _ secG_un_right) with "[//]").
+      iApply ((@mwp_step_fupd_store _ secG_un_right) with "[//]").
       iFrame. iIntros "!> Hl2".
       iMod "Hclose" as "_".
       iMod ("HcloseI2" with "[Hl2]") as "_".
@@ -848,19 +848,19 @@ Section fundamental.
     : Γ ⊨ Load e ≤ₗ Load e' : τ'.
   Proof.
     iIntros (Θ ρ vvs ?) "[#Hcoh #HΓ]".
-    smart_ic_bind LoadCtx v n x "#Href" IHtyped.
+    smart_mwp_bind LoadCtx v n x "#Href" IHtyped.
     rewrite interp_sec_def interp_ref_def.
     case_bool_decide as Hflow2.
     - iDestruct "Href" as ([l1 l2]) "[% #Hinv] /=".
       destruct x. iSimplifyEq.
-      iApply (ic_double_atomic_lr _ _ StronglyAtomic).
+      iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
       iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
       iMod fupd_intro_mask' as "Hclose"; first set_solver.
       iModIntro.
-      iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+      iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
-      iApply ((@ic_fupd_load _ secG_un_right) with "[//]").
+      iApply ((@mwp_fupd_load _ secG_un_right) with "[//]").
       iFrame. iIntros "Hl2".
       iMod ("HcloseI" with "[Hl1 Hl2]") as "_".
       { iNext. iExists _,_. iFrame; iFrame "#". }
@@ -871,24 +871,24 @@ Section fundamental.
       iDestruct "Href1" as (N1 l1 ->) "#H1".
       iDestruct "Href2" as (N2 l2 ->) "#H2".
       move: Hflow => /interp_label_flowsto /(_ ρ) Hflow.
-      iApply ic_un_bi_lr.
-      iApply (ic_atomic ((icd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
+      iApply mwp_un_bi_lr.
+      iApply (mwp_atomic ((mwpd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
       case_bool_decide.
       + iMod ("H1" with "[]") as "Hl1"; first solve_ndisj.
         iDestruct "Hl1" as (w1) "[[Hl1 #Hw1] HcloseI1]".
         iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
         iModIntro.
-        iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+        iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
         iFrame. iIntros "!> Hl1".
         iMod "Hclose" as "_".
         iMod ("HcloseI1" with "[Hl1]") as "_"; first eauto.
         iModIntro.
-        iApply (ic_atomic ((icd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
+        iApply (mwp_atomic ((mwpd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
         iMod ("H2" with "[]") as "Hl2"; first solve_ndisj.
         iDestruct "Hl2" as (w2) "[[Hl2 #Hw2] HcloseI2]".
         iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
         iModIntro.
-        iApply ((@ic_step_fupd_load _ secG_un_right) with "[//]").
+        iApply ((@mwp_step_fupd_load _ secG_un_right) with "[//]").
         iFrame. iIntros "!> Hl2".
         iMod "Hclose" as "_".
         iMod ("HcloseI2" with "[Hl2]") as "_"; first eauto.
@@ -900,17 +900,17 @@ Section fundamental.
         iDestruct "Hl1" as (w1) "[Hl1 #Hw1]".
         iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
         iModIntro.
-        iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
+        iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
         iFrame. iIntros "!> Hl1".
         iMod "Hclose" as "_".
         iMod ("HcloseI1" with "[Hl1]") as "_"; first eauto.
         iModIntro.
-        iApply (ic_atomic ((icd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
+        iApply (mwp_atomic ((mwpd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
         iMod ("H2" with "[]") as "[Hl2 HcloseI2]"; first solve_ndisj.
         iDestruct "Hl2" as (w2) "[Hl2 #Hw2]".
         iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
         iModIntro.
-        iApply ((@ic_step_fupd_load _ secG_un_right) with "[//]").
+        iApply ((@mwp_step_fupd_load _ secG_un_right) with "[//]").
         iFrame. iIntros "!> Hl2".
         iMod "Hclose" as "_".
         iMod ("HcloseI2" with "[Hl2]") as "_"; [auto|].
@@ -926,9 +926,9 @@ Section fundamental.
     : Γ ⊨ Pack e ≤ₗ Pack e' : TExist τ @ ⊥ₛ.
   Proof.
     iIntros (????) "#[Hcoh #HΓ]".
-    smart_ic_bind PackCtx w n x "#Hv" IHtyped.
-    iApply (ic_value (ic_binary)); umods.
-    iApply (ic_value (icd_right SI_right)); umods.
+    smart_mwp_bind PackCtx w n x "#Hv" IHtyped.
+    iApply (mwp_value (mwp_binary)); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods.
     iDestruct (secbin_subsumes_secun with "[$Hcoh $Hv]") as "#[Hw1 Hw2]".
     rewrite [⟦ TExist τ @ ⊥ₛ ⟧ₛ _ _ _]interp_sec_def interp_exist_def
             !interp_un_sec_def !interp_un_exist_def.
@@ -950,16 +950,16 @@ Section fundamental.
     : Γ ⊨ Unpack e1 e2 ≤ₗ Unpack e1' e2' : τ2.
   Proof.
     iIntros (????) "#[Hcoh HΓ]".
-    smart_ic_bind (UnpackCtx _) w n x "#Hv" IHtyped1.
+    smart_mwp_bind (UnpackCtx _) w n x "#Hv" IHtyped1.
     rewrite interp_sec_def interp_exist_def.
     case_bool_decide as Hflow2.
     - destruct x; cbn.
       iDestruct "Hv" as (τR τi1 τi2) "(% & % & % & #Hrel & #Hv)".
       iDestruct "Hv" as ((?,?)) "(% & % & Hww)". simplify_eq. cbn.
-      iApply ic_left_pure_step_index; [done|].
-      iApply ic_left_pure_step; [done|]. iModIntro.
+      iApply mwp_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]. iModIntro.
       rewrite !up_env_subst /=.
-      iApply (ic_wand_r ic_binary); iSplitL.
+      iApply (mwp_wand_r mwp_binary); iSplitL.
       { iApply (IHtyped2 ((τR, (τi1, τi2)) :: _) _ ((_,_) :: _)). iSplit.
         - iApply big_sepL_cons; iFrame "#".
         - iApply interp_env_cons. iFrame "#".
@@ -970,18 +970,18 @@ Section fundamental.
       iDestruct "Hv" as "[#Hv1 #Hv2]".
       iDestruct "Hv1" as (τi1) "(% & Hv1)". iDestruct "Hv1" as (v1) "(-> & Hv1)".
       iDestruct "Hv2" as (τi2) "(% & Hv2)". iDestruct "Hv2" as (v2) "(-> & Hv2)".
-      iApply ic_left_pure_step_index; [done|].
-      iApply ic_left_pure_step; [done|]. iModIntro. cbn.
+      iApply mwp_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]. iModIntro. cbn.
       rewrite -/of_val !up_env_subst.
       iDestruct (interp_env_bi_un with "[$Hcoh $HΓ]") as "[HΓl HΓr]".
-      iApply ic_un_bi_lr.
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_un_bi_lr.
+      iApply mwp_wand_r; iSplitL.
       { iDestruct (interp_un_env_ren with "HΓl") as "HΓl1".
         iDestruct (interp_un_env_cons with "[$Hv1 $HΓl1]") as "HΓl2".
         iApply ((fundamental_un _ _ _ _ Htyped1) with "HΓl2").
         iPureIntro. eapply ord_neg_left; [|done]. by apply ord_join_right. }
       iIntros (???) "#Hv1'".
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_wand_r; iSplitL.
       { iDestruct (interp_un_env_ren with "HΓr") as "HΓr1".
         iDestruct (interp_un_env_cons with "[$Hv2 $HΓr1]") as "HΓr2".
         iApply ((fundamental_un _ _ _ _ Htyped2) with "HΓr2").
@@ -1000,9 +1000,9 @@ Section fundamental.
     : Γ ⊨ Fold v ≤ₗ Fold v' : TRec τ @ ⊥ₛ.
   Proof.
     iIntros (????) "[#Hcoh #HΓ]".
-    smart_ic_bind FoldCtx w n x "#Hv" IHtyped.
-    iApply (ic_value (ic_binary)); umods.
-    iApply (ic_value (icd_right SI_right)); umods. iModIntro.
+    smart_mwp_bind FoldCtx w n x "#Hv" IHtyped.
+    iApply (mwp_value (mwp_binary)); umods.
+    iApply (mwp_value (mwpd_right SI_right)); umods. iModIntro.
     rewrite [⟦ TRec τ @ ⊥ₛ ⟧ₛ _ _ _]interp_sec_def interp_rec_def.
     rewrite bool_decide_eq_true_2; [|by apply ord_bottom].
     rewrite fixpoint_interp_rec1_eq /interp_rec1 /=.
@@ -1017,16 +1017,16 @@ Section fundamental.
     : Γ ⊨ Unfold e ≤ₗ Unfold e' : τ.|[TRec τ/].
   Proof.
     iIntros (????) "[#Hcoh #HΓ]".
-    smart_ic_bind UnfoldCtx w n x "#Hw" IHtyped.
+    smart_mwp_bind UnfoldCtx w n x "#Hw" IHtyped.
     rewrite [⟦ TRec τ @ _ ⟧ₛ _ _ _]interp_sec_def interp_rec_def.
     case_bool_decide as Hflow2.
     - destruct x. rewrite fixpoint_interp_rec1_eq /interp_rec1 /=.
       iDestruct "Hw" as ([w1 w2]) "[% #H]". simplify_eq.
       change (fixpoint _) with (⟦ TRec τ ⟧ Θ ρ).
-      iApply ic_left_pure_step_index; [done|].
-      iApply ic_left_pure_step; [done|]. iModIntro.
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value (icd_right _)); umods.
+      iApply mwp_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]. iModIntro.
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value (mwpd_right _)); umods.
       iModIntro.
       by iApply (interp_sec_type_subst_up _ []).
     - destruct x. rewrite !interp_un_sec_def !interp_un_rec_def.
@@ -1036,11 +1036,11 @@ Section fundamental.
       iDestruct "Hv2" as (v2) "[-> Hv2]".
       replace (fixpoint _) with (⌊ TRec τ ₗ⌋ (projl Θ) ρ); [|done].
       replace (fixpoint _) with (⌊ TRec τ ᵣ⌋ (projr Θ) ρ); [|done].
-      iApply ic_left_pure_step_index; [done|].
-      iApply ic_left_pure_step; [done|]. iModIntro.
+      iApply mwp_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|]. iModIntro.
       rewrite -/of_val; cbn.
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value (icd_right _)); umods.
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value (mwpd_right _)); umods.
       iModIntro. destruct τ.
       rewrite interp_sec_def /=. asimpl.
       move: Hflow=> /interp_label_flowsto /(_ ρ) Hflow.

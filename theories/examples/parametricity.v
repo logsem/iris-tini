@@ -1,7 +1,7 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent Require Import IC_adequacy.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left.
+From mwp Require Import mwp_adequacy.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left.
 From logrel_ifc.lambda_sec Require Import lattice notation fundamental_binary.
 
 Definition SI Σ (x : gen_heapG loc val Σ) (σ : state) := gen_heap_ctx σ.
@@ -34,7 +34,7 @@ Section TP.
   Proof.
     intros He.
     set (Σ := #[invΣ; gen_heapΣ loc val]).
-    eapply (ic_step_fupd_adequacy (SI Σ) (SI_init σ Σ) _ _ _ (λ x _ , x = v)).
+    eapply (mwp_step_fupd_adequacy (SI Σ) (SI_init σ Σ) _ _ _ (λ x _ , x = v)).
     rewrite /SI_init /SI /=.
     iIntros (?) "Hs".
     iModIntro; iFrame.
@@ -45,19 +45,19 @@ Section TP.
        has to be [H] *)
       done. }
     rewrite /=; asimpl.
-    iApply (ic_step_fupd_bind _ (fill [TAppCtx; AppLCtx _])).
-    iApply ic_wand_l; iFrame "He"; simpl.
+    iApply (mwp_step_fupd_bind _ (fill [TAppCtx; AppLCtx _])).
+    iApply mwp_wand_l; iFrame "He"; simpl.
     iIntros (w _ _) "#Hw". utforalls.
     iSpecialize ("Hw" $! (λ x, ⌜x = v⌝)%I with "[] []");
       first by iPureIntro; apply _.
     { (* The same is the case here, but for [TArrow] *)
       done. }
-    iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-    iApply ic_wand_r; iSplitL.
+    iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+    iApply mwp_wand_r; iSplitL.
     { iApply "Hw". }
     iIntros (u _ _) "#Hu /=".
     rewrite interp_un_sec_def interp_un_arrow_def /interp_un_expr.
-    iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+    iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
     { iApply "Hu"; [|done]. rewrite interp_un_sec_def interp_un_tvar_def //. }
     iIntros (???). by utvars.
   Qed.
@@ -71,7 +71,7 @@ Section TP.
   Proof.
     intros He.
     set (Σ := #[invΣ; gen_heapΣ loc val]).
-    eapply (ic_step_fupd_adequacy (SI Σ) (SI_init σ Σ) _ _ _ (λ _ _ , False)); [|done].
+    eapply (mwp_step_fupd_adequacy (SI Σ) (SI_init σ Σ) _ _ _ (λ _ _ , False)); [|done].
     rewrite /SI_init /SI /=.
     iIntros (?) "Hs".
     iModIntro; iFrame.
@@ -80,8 +80,8 @@ Section TP.
     { iApply interp_un_env_nil. }
     { done. }
     rewrite /=; asimpl.
-    iApply (ic_step_fupd_bind _ (fill [TAppCtx])).
-    iApply ic_wand_l; iFrame "He"; simpl.
+    iApply (mwp_step_fupd_bind _ (fill [TAppCtx])).
+    iApply mwp_wand_l; iFrame "He"; simpl.
     iIntros (w _ _) "#Hw". utforalls.
     iSpecialize ("Hw" $! (λ _, False)%I with "[] []");
       first by iPureIntro; apply _.
@@ -98,7 +98,7 @@ Section TP.
   Proof.
     intros He.
     set (Σ := #[invΣ; gen_heapΣ loc val]).
-    eapply (ic_left_adequacy
+    eapply (mwp_left_adequacy
               (SI Σ) (SI Σ) (SI_init σ Σ) (SI_init σ Σ) _ _ _ _ _ (λ x _ y _, False)); [|done|done].
     rewrite /SI_init /SI /=.
     iIntros ([? [leftG rightG]]).
@@ -109,16 +109,16 @@ Section TP.
     iPoseProof (He [] [] [] with "[]") as "He".
     { rewrite /env_coherent. iSplitL; [done|]. iApply interp_env_nil. }
     rewrite /=; asimpl.
-    iApply (ic_left_strong_bind _ _ (fill [TAppCtx; AppLCtx _]) (fill [TAppCtx; AppLCtx _])). cbn.
-    iApply (ic_wand_r (icd_left _ _)). iSplitL.
+    iApply (mwp_left_strong_bind _ _ (fill [TAppCtx; AppLCtx _]) (fill [TAppCtx; AppLCtx _])). cbn.
+    iApply (mwp_wand_r (mwpd_left _ _)). iSplitL.
     { iApply "He". }
     iClear "He".
     iIntros (w ??) "#Hw /=". utforalls.
     rewrite bool_decide_eq_true_2 //.
     iDestruct "Hw" as "#(#Hw & Hw1 & Hw2)".
     iSpecialize ("Hw" $! (λ _, False)%I (λ _, True)%I (λ _, True)%I).
-    iApply (ic_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])).
-    iApply ic_wand_r; iSplitL.
+    iApply (mwp_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])).
+    iApply mwp_wand_r; iSplitL.
     { iApply "Hw".
       - iPureIntro; intros []; apply _.
       - iPureIntro. apply _.
@@ -128,7 +128,7 @@ Section TP.
     iIntros (u ??) "Hu /=". uarrows.
     rewrite bool_decide_eq_true_2 //.
     iDestruct "Hu" as "#(#Hu & _)".
-    iApply (ic_wand_r (icd_left _ _)); iSplitL.
+    iApply (mwp_wand_r (mwpd_left _ _)); iSplitL.
     { iApply ("Hu" $! (_, _)). utvars. rewrite bool_decide_eq_false_2 //. }
     iIntros (???) "? /=". utvars.
     rewrite bool_decide_eq_true_2 //.
@@ -166,7 +166,7 @@ Section arbitrary.
   Proof.
     intros Hflow1 Hflow2 Hflow3 He.
     set (Σ := #[invΣ; gen_heapΣ loc val]).
-    eapply (ic_left_adequacy
+    eapply (mwp_left_adequacy
               (SI Σ) (SI Σ) (SI_init σ Σ) (SI_init σ Σ) _ _ _ _ _ (λ x _ y _, x = v)); [|done].
     rewrite /SI_init /SI /=.
     iIntros ([? [leftG rightG]]).
@@ -177,16 +177,16 @@ Section arbitrary.
     iPoseProof (He [] [] [] with "[]") as "He".
     { rewrite /env_coherent. iSplitL; [done|]. iApply interp_env_nil. }
     rewrite /=; asimpl.
-    iApply (ic_left_strong_bind _ _ (fill [TAppCtx; AppLCtx _]) (fill [TAppCtx; AppLCtx _])). cbn.
-    iApply (ic_wand_r (icd_left _ _)). iSplitL.
+    iApply (mwp_left_strong_bind _ _ (fill [TAppCtx; AppLCtx _]) (fill [TAppCtx; AppLCtx _])). cbn.
+    iApply (mwp_wand_r (mwpd_left _ _)). iSplitL.
     { iApply "He". }
     iClear "He".
     iIntros (w ??) "#Hw /=". utforalls.
     case_bool_decide.
     - iDestruct "Hw" as "#(#Hw & Hw1 & Hw2)".
       iSpecialize ("Hw" $! (λ '(x, y), ⌜x = v⌝ ∧ ⌜y = v⌝)%I (λ x, ⌜x = v⌝)%I (λ x, ⌜x = v⌝)%I).
-      iApply (ic_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])).
-      iApply ic_wand_r; iSplitL.
+      iApply (mwp_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])).
+      iApply mwp_wand_r; iSplitL.
       { iApply "Hw".
         - iPureIntro; intros []; apply _.
         - iPureIntro. apply _.
@@ -196,35 +196,35 @@ Section arbitrary.
       iIntros (u ??) "Hu /=". uarrows.
       case_bool_decide as Heq.
       + iDestruct "Hu" as "#(#Hu & _)".
-        iApply (ic_wand_r (icd_left _ _)); iSplitL.
+        iApply (mwp_wand_r (mwpd_left _ _)); iSplitL.
         { iApply ("Hu" $! (_, _)). utvars. case_bool_decide; eauto. }
         iIntros (???) "/=". utvars. case_bool_decide.
         { by iIntros "[-> _]". }
         by iIntros "/= [-> _]".
       + iDestruct "Hu" as "(#Hu1 & #Hu2) /=".
-        iApply ni_logrel_lemmas.ic_un_bi_lr.
-        iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+        iApply ni_logrel_lemmas.mwp_un_bi_lr.
+        iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
         { iApply "Hu1"; [by utvars|]. iPureIntro. by eapply (ord_neg_left _ _ _ Hflow1). }
         iIntros (???) "/=". utvars. iIntros "->".
-        iApply (ic_wand_r (icd_step_fupd _)). iSplitL.
+        iApply (mwp_wand_r (mwpd_step_fupd _)). iSplitL.
         { iApply "Hu2"; [by utvars|]. iPureIntro. by eapply (ord_neg_left _ _ _ Hflow1). }
         by iIntros (???) "?".
     - iDestruct "Hw" as "[#Hw1 #Hw2]".
-      iApply (ic_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])). cbn.
+      iApply (mwp_left_strong_bind _ _ (fill [AppLCtx _]) (fill [AppLCtx _])). cbn.
       iSpecialize ("Hw1" $! (λ x, ⌜x = v⌝)%I with "[]"); first (iPureIntro; apply _).
       iSpecialize ("Hw2" $! (λ x, ⌜x = v⌝)%I with "[]"); first (iPureIntro; apply _).
-      iApply ni_logrel_lemmas.ic_un_bi_lr.
-      iApply ic_wand_r; iSplitL.
+      iApply ni_logrel_lemmas.mwp_un_bi_lr.
+      iApply mwp_wand_r; iSplitL.
       { iApply "Hw1". iPureIntro. by eapply ord_neg_left. }
       iIntros (u1 ??) "#Hu1". cbn.
-      iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+      iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
       { iApply "Hw2". iPureIntro. by eapply ord_neg_left. }
       iIntros (u2 ??) "#Hu2". uarrows.
-      iApply ni_logrel_lemmas.ic_un_bi_lr.
-      iApply ic_wand_r; iSplitL.
+      iApply ni_logrel_lemmas.mwp_un_bi_lr.
+      iApply mwp_wand_r; iSplitL.
       { iApply "Hu1"; [by utvars|]. iPureIntro. by eapply ord_neg_left. }
       iIntros (???). utvars. iIntros "->".
-      iApply ic_wand_r; iSplitL.
+      iApply mwp_wand_r; iSplitL.
       { iApply "Hu2"; [by utvars|]. iPureIntro. by eapply ord_neg_left. }
       iIntros (???). utvars. by iIntros "->".
   Qed.

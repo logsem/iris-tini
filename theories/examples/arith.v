@@ -1,7 +1,7 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas
-     IC_logrel_fupd ni_logrel_fupd_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas
+     mwp_logrel_fupd ni_logrel_fupd_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.
@@ -22,8 +22,8 @@ Section related.
     [] ⊨ multZ ≤ₗ multZ : (TArrow L (TNat @ H) (TNat @ L)) @ L.
   Proof.
     iIntros (????) "_" . rewrite /interp_expr.
-    iApply (ic_value ic_binary); umods.
-    iApply (ic_value (ic_right)); umods.
+    iApply (mwp_value mwp_binary); umods.
+    iApply (mwp_value (mwp_right)); umods.
     uarrows.
     rewrite bool_decide_eq_true_2 //.
     iModIntro. repeat iSplit; iModIntro.
@@ -32,14 +32,14 @@ Section related.
       iIntros "[Hw1 Hw2]". rewrite /interp_expr /=.
       iDestruct "Hw1" as (n1) "->".
       iDestruct "Hw2" as (n2) "->".
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       asimpl. iModIntro.
-      iApply ic_left_pure_step; [done|].
-      iApply ic_left_pure_step_index; [done|].
+      iApply mwp_left_pure_step; [done|].
+      iApply mwp_left_pure_step_index; [done|].
       rewrite /= !Nat.mul_0_r. iNext.
-      iApply (ic_value ic_binary); umods.
-      iApply (ic_value ic_right); umods.
+      iApply (mwp_value mwp_binary); umods.
+      iApply (mwp_value mwp_right); umods.
       iModIntro. unats.
       rewrite bool_decide_eq_true_2 //; auto.
     - iIntros (?) "Hw1". unats.

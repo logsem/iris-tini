@@ -1,6 +1,6 @@
 From iris.proofmode Require Import tactics.
-From IC.if_convergent.derived Require Import IC_step_fupd.
-From IC.if_convergent.derived.ni_logrel Require Import IC_left IC_right ni_logrel_lemmas.
+From mwp.mwp_modalities Require Import mwp_step_fupd.
+From mwp.mwp_modalities.ni_logrel Require Import mwp_left mwp_right ni_logrel_lemmas.
 From logrel_ifc.lambda_sec Require Export lattice fundamental_binary notation.
 
 Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.
@@ -36,47 +36,47 @@ Section related.
     rewrite !interp_arrow_def !interp_un_arrow_def.
     iDestruct "Hf" as "(#Hf & #Hf1 & #Hf2)".
     iDestruct "Hg" as "(#Hg & #Hg1 & #Hg2)".
-    iApply ic_un_bi_lr.
+    iApply mwp_un_bi_lr.
     destruct b1.
-    - iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-      iApply ic_value; umods. iModIntro.
-      iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+    - iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+      iApply mwp_value; umods. iModIntro.
+      iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
       { iApply ("Hf1" $! UnitV); [|done]. uunits. by []. }
       iIntros (v ??). uunits. iIntros "->". rewrite bool_to_val.
       destruct b2.
-      + iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-        iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-        iApply ic_value; umods. iModIntro.
-        iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+      + iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+        iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+        iApply mwp_value; umods. iModIntro.
+        iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
         { iApply ("Hf2" $! UnitV); [|done]. uunits. by []. }
         iIntros (v ??) "/=". uunits. iIntros "->".
         rewrite bool_decide_eq_true_2 //.
-      + iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-        iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-        iApply ic_value; umods. iModIntro.
-        iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+      + iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+        iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+        iApply mwp_value; umods. iModIntro.
+        iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
         { iApply ("Hg2" $! UnitV); [|done]. uunits. by []. }
         iIntros (v ??) "/=". uunits. iIntros "->".
         rewrite bool_decide_eq_true_2 //.
-    - iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-      iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-      iApply ic_value; umods. iModIntro.
-      iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+    - iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+      iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+      iApply mwp_value; umods. iModIntro.
+      iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
       { iApply ("Hg1" $! UnitV); [|done]. uunits. by []. }
       iIntros (v ??) "/=". uunits. iIntros "->". rewrite bool_to_val.
       destruct b2.
-      + iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-        iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-        iApply ic_value; umods. iModIntro.
-        iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+      + iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+        iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+        iApply mwp_value; umods. iModIntro.
+        iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
         { iApply ("Hf2" $! UnitV); [|done]. uunits. by []. }
         iIntros (v ??) "/=". uunits. iIntros "->".
         rewrite bool_decide_eq_true_2 //.
-      + iApply (ic_step_fupd_bind _ (fill [AppLCtx _])).
-        iApply ic_step_fupd_pure_step; [done|]. iModIntro.
-        iApply ic_value; umods. iModIntro.
-        iApply (ic_wand_r (icd_step_fupd _)); iSplitL.
+      + iApply (mwp_step_fupd_bind _ (fill [AppLCtx _])).
+        iApply mwp_step_fupd_pure_step; [done|]. iModIntro.
+        iApply mwp_value; umods. iModIntro.
+        iApply (mwp_wand_r (mwpd_step_fupd _)); iSplitL.
         { iApply ("Hg2" $! UnitV); [|done]. uunits. by []. }
         iIntros (v ??) "/=". uunits. iIntros "->".
         rewrite bool_decide_eq_true_2 //.

@@ -1,0 +1,3 @@
+[submodule "modal-weakestpre"]
+	path = vendor/modal-weakestpre
+	url = https://github.com/logsem/modal-weakestpre.git

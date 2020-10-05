@@ -24,7 +24,7 @@ Section logrel.
   Implicit Types interp : lty.
 
   Definition interp_expr interp Θ ρ (ee : expr * expr) : iProp Σ :=
-    (IC@{ic_binary, ee.2} ee.1 {{ v ; _ | w ; m , interp Θ ρ (v, w) }})%I.
+    (MWP@{mwp_binary, ee.2} ee.1 {{ v ; _ | w ; m , interp Θ ρ (v, w) }})%I.
   Global Instance interp_expr_proper n :
     Proper ((dist n) ==> (dist n) ==> (=) ==> (=) ==> dist n) interp_expr.
   Proof.
