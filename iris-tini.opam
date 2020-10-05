@@ -3,8 +3,10 @@ name: "iris-tini"
 synopsis: "Logical relations for Termination-Insensitive Noninterference"
 maintainer: "Simon Gregersen <gregersen@cs.au.dk>"
 authors: "Simon Gregersen <gregersen@cs.au.dk>, Johan Bay <bay@cs.au.dk>"
+license: "BSD-3"
 homepage: "https://github.com/logsem/iris-tini"
 dev-repo: "git+https://github.com/logsem/iris-tini.git"
+bug-reports: "https://github.com/logsem/iris-tini/issues"
 build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [

@@ -62,7 +62,7 @@ The development can be built using
 [Docker](https://docs.docker.com/get-docker/). To speed up compilation time, the
 dependencies have been prepared and compiled separately in
 [Dockerfile.deps](Dockerfile.deps) and published in a Dockerhub
-[repository](https://hub.docker.com/repository/docker/simongregersen/modal-weakestpre). This
+[repository](https://hub.docker.com/repository/docker/simongregersen/iris-tini). This
 image can be built locally by running `make docker-build-deps`.
 
 Run `make docker-build` to build [Dockerfile](Dockerfile) and the development
