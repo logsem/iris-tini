@@ -1,5 +1,6 @@
 # Logical Relations for Termination-Insensitive Noninterference
 [![Build Status](https://travis-ci.com/logsem/iris-tini.svg?branch=master)](https://travis-ci.com/logsem/iris-tini)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4068072.svg)](https://doi.org/10.5281/zenodo.4068072)
 
 A mechanized logical relations model for an expressive information-flow control
 type system with recursive types, existential types, label polymorphism, and
