@@ -64,7 +64,12 @@ docker-build:
 	  --build-arg=NJOBS=4 \
           --pull \
 	  --tag iris-tini-compile:latest \
-          --file Dockerfile . 
+          --file Dockerfile .
+
+zip-artifact:
+	zip -FSr artifact.zip extra html theories vendor _CoqProject doc.html	\
+	Dockerfile Dockerfile.deps iris-tini.opam LICENSE Makefile POPL21.md	\
+	POPL21.html README.md
 
 # Some files that do *not* need to be forwarded to Makefile.coq
 Makefile: ;

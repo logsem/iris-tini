@@ -8,4 +8,3 @@ COPY --chown=coq:coq . /home/coq/
 RUN make build-dep
 
 RUN make -j ${NJOBS}
-

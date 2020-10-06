@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>POPL21.html</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+</head>
+
+<body>
+
+<h1>POPL21 Artifact Evaluation</h1>
+
+<p>This document contains instructions for the artifact evaluation reviewers when
+evaluating this Coq development.</p>
+
+<h2>Inspecting the development</h2>
+
+<p>The modal weakest precondition theory is standalone and available in the
+<a href="vendor/modal_weakestpre/theories">vendor/modal_weakestpre/theories</a> folder.
+The logical relations model for proving noninterference is available in the
+<a href="theories">theories</a> folder.</p>
+
+<p>The artifact comes with pre-compiled coqdoc documentation accessible through
+<a href="doc.html">doc.html</a>. This document also contains a mapping of the definitions,
+examples, and results from the paper to the Coq development.</p>
+
+<h2>Building the development</h2>
+
+<p>We recommend compiling the development using Docker. To do this,</p>
+
+<ol>
+<li>Make sure you have <a href="https://docs.docker.com/get-docker/">Docker</a> installed.</li>
+<li>Run <code>make docker-build</code> to build the Docker image.</li>
+</ol>
+
+<p>Optionally, you can follow this by executing <code>docker run -i -t
+iris-tini-compile</code> to start a container with the freshly built image and access
+an interactive shell inside it.</p>
+
+<p>For further information, including how to build the development manually, see
+<a href="README.md">README.md</a>.</p>
+
+<h2>Troubleshooting</h2>
+
+<p>In order to build the development, you might have to increase the amount of
+memory allocated to a running Docker container. We suggest 4GB. For
+instructions, see
+<a href="https://stackoverflow.com/questions/44533319/how-to-assign-more-memory-to-docker-container">here</a>.</p>
+
+</body>
+</html>
