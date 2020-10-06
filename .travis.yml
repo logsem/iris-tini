@@ -16,11 +16,7 @@ branches:
 services:
   - docker
 
-env:
-  jobs:
-  - COQ_IMAGE="coqorg/coq:8.12.0"
-
 script:
 - echo -e "${ANSI_YELLOW}Building...${ANSI_RESET}" && echo -en 'travis_fold:start:script\\r'
-- docker build --build-arg=coq_image="${COQ_IMAGE}" --build-arg=NJOBS=2 --pull --tag iris-tini --file Dockerfile .
+- docker build --build-arg=NJOBS=2 --pull --tag iris-tini --file Dockerfile .
 - echo -en 'travis_fold:end:script\\r'
