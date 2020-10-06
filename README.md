@@ -118,24 +118,24 @@ documentation.
 Below we highlight the parts of the modal weakest precondition theory that is
 relevant for this development.
 
-- [vendor/modal-weakestpre/theories/mwp.v](vendor/modal-weakestpre/theories/mwp.v):
+- [modal-weakestpre/theories/mwp.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp.v):
   definition of the generic modal weakest precondition
-- [vendor/modal-weakestpre/theories/mwp_adequacy.v](vendor/modal-weakestpre/theories/mwp_adequacy.v):
+- [modal-weakestpre/theories/mwp_adequacy.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_adequacy.v):
   adequacy theorem of the generic modal weakest precondition
-- [vendor/modal-weakestpre/theories/mwp_triple.v](vendor/modal-weakestpre/theories/mwp_triple.v):
+- [modal-weakestpre/theories/mwp_triple.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_triple.v):
   a Hoare-triple definition for modal weakest precondition
-- [vendor/modal-weakestpre/theories/mwp_modalities/mwp_step_fupd.v](vendor/modal-weakestpre/theories/mwp_modalities/mwp_step_fupd.v):
+- [modal-weakestpre/theories/mwp_modalities/mwp_step_fupd.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_modalities/mwp_step_fupd.v):
   step-taking update modality MWP instance used for the unary relation
-- [vendor/modal-weakestpre/theories/mwp_modalities/mwp_fupd.v](vendor/modal-weakestpre/theories/mwp_modalities/mwp_fupd.v):
+- [modal-weakestpre/theories/mwp_modalities/mwp_fupd.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_modalities/mwp_fupd.v):
   update modality MWP instance
-- [vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_right.v](vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_right.v):
+- [modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_right.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_modalities/ni_logrel/mwp_right.v):
   inner MWP instance for the binary relation
-- [vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_left.v](vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_left.v):
+- [modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_left.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_modalities/ni_logrel/mwp_left.v):
   binary MWP instance for the binary relation
-- [vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/ni_logrel_lemmas.v](vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/ni_logrel_lemmas.v):
+- [modal-weakestpre/theories/mwp_modalities/ni_logrel/ni_logrel_lemmas.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_modalities/ni_logrel/ni_logrel_lemmas.v):
   lemmas for the interaction between the step-taking update modality instance
   (unary) and the binary MWP instance
-- [vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_logrel_fupd.v](vendor/modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_logrel_fupd.v):
+- [modal-weakestpre/theories/mwp_modalities/ni_logrel/mwp_logrel_fupd.v](https://github.com/logsem/modal-weakestpre/tree/main/theories/mwp_modalities/ni_logrel/mwp_logrel_fupd.v):
   binary MWP instance used for the
   [theories/examples/refs.v](theories/examples/refs.v) and
   [theories/examples/refs_implicit.v](theories/examples/refs_implicit.v) example
