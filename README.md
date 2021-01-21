@@ -18,8 +18,8 @@ framework in the Coq proof assistant.
 
 This development accompanies the paper [Mechanized Logical Relations for
 Termination-Insensitive
-Noninterference](https://cs.au.dk/~gregersen/papers/2021-tiniris.pdf)
-conditionally accepted for publication at POPL 2021.
+Noninterference](https://cs.au.dk/~gregersen/papers/2021-tiniris.pdf) published
+at POPL 2021.
 
 ## Building the theory
 
