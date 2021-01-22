@@ -74,8 +74,9 @@ Section related_un.
     iApply mwp_step_fupd_pure_step; [done|]. asimpl.
     iModIntro.
     iMod new_pending as (γ) "Hγ".
-    iMod (inv_alloc shootN _ ((∃ v, pending γ ∗ l ↦ v) ∨ (shot γ ∗ l ↦ 1)%I)
+    iMod (inv_alloc shootN _ ((∃ v, pending γ ∗ l ↦ v) ∨ (shot γ ∗ l ↦ (NatV 1))%I)
             with "[Hl Hγ]") as "#Hinv".
+    Unshelve. 
     { iNext. iLeft. iExists _. by iFrame. }
     iApply (mwp_value (mwpd_step_fupd SI)); umods.
     uarrows. iIntros "!> !>" (?) "_ %Hflow".

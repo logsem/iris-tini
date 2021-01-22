@@ -29,6 +29,7 @@ Makefile.coq: _CoqProject
 %: Makefile.coq
 	+make -f Makefile.coq $@
 
+# Install build-dependencies
 build-dep/opam: iris-tini.opam Makefile
 	@echo "# Creating build-dep package."
 	@mkdir -p build-dep
@@ -45,30 +46,21 @@ build-dep: build-dep/opam phony
 	  if opam --version | grep "^1\." -q; then \
 	    BUILD_DEP_PACKAGE="$$(egrep "^name:" build-dep/opam | sed 's/^name: *"\(.*\)" */\1/')" && \
 	    opam pin add -k path $(OPAMFLAGS) "$$BUILD_DEP_PACKAGE".dev build-dep && \
-	    opam reinstall --verbose $(OPAMFLAGS) "$$BUILD_DEP_PACKAGE"; \
+	    opam reinstall -j 2 --verbose $(OPAMFLAGS) "$$BUILD_DEP_PACKAGE"; \
 	  else \
-	    opam install --verbose $(OPAMFLAGS) build-dep/; \
+	    opam install -j 2 --verbose $(OPAMFLAGS) build-dep/; \
 	  fi
-
-docker-build-deps:
-	docker build \
-		--build-arg=NJOBS=4 \
-		--tag $(DOCKER_IMAGE):latest \
-		--file Dockerfile.deps .
-
-docker-push-deps:
-	docker push $(DOCKER_IMAGE):latest
 
 docker-build:
 	docker build \
 	  --build-arg=NJOBS=4 \
           --pull \
-	  --tag iris-tini-compile:latest \
+	  --tag iris-tini \
           --file Dockerfile .
 
 zip-artifact:
 	zip -FSr artifact.zip extra html theories vendor _CoqProject doc.html	\
-	Dockerfile Dockerfile.deps iris-tini.opam LICENSE Makefile POPL21.md	\
+	Dockerfile iris-tini.opam LICENSE Makefile POPL21.md	\
 	POPL21.html README.md
 
 # Some files that do *not* need to be forwarded to Makefile.coq

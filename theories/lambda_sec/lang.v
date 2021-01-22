@@ -1,12 +1,24 @@
 From iris.program_logic Require Export language ectx_language ectxi_language.
 From logrel_ifc.prelude Require Export base.
-From stdpp Require Import gmap.
+From stdpp Require Import gmap countable.
 
 Module lambda_sec.
 
   Inductive binop := Add | Sub | Mult | Eq | Le | Lt.
 
-  Definition loc := positive.
+  Record loc := { loc_car : Z }.
+
+  Global Instance loc_eq_decision : EqDecision loc.
+  Proof. solve_decision. Qed.
+
+  Global Instance loc_inhabited : Inhabited loc := populate {|loc_car := 0 |}.
+
+  Global Instance loc_countable : Countable loc.
+  Proof. by apply (inj_countable' loc_car (λ i, {| loc_car := i |})); intros []. Qed.
+
+  Program Instance loc_infinite : Infinite loc :=
+    inj_infinite (λ p, {| loc_car := p |}) (λ l, Some (loc_car l)) _.
+  Next Obligation. done. Qed.
 
   Inductive expr :=
   | Var (x : var)
@@ -320,14 +332,14 @@ Canonical Structure lambda_sec_lang := LanguageOfEctx lambda_sec_ectx_lang.
 
 Export lambda_sec.
 
-Hint Extern 20 (PureExec _ _ _) => progress simpl : typeclass_instances.
+Global Hint Extern 20 (PureExec _ _ _) => progress simpl : typeclass_instances.
 
-Hint Extern 5 (IntoVal _ _) => eapply of_to_val; fast_done : typeclass_instances.
-Hint Extern 10 (IntoVal _ _) =>
+Global Hint Extern 5 (IntoVal _ _) => eapply of_to_val; fast_done : typeclass_instances.
+Global Hint Extern 10 (IntoVal _ _) =>
   rewrite /IntoVal; eapply of_to_val; rewrite /= !to_of_val /=; solve [ eauto ] : typeclass_instances.
 
-Hint Extern 5 (AsVal _) => eexists; eapply of_to_val; fast_done : typeclass_instances.
-Hint Extern 10 (AsVal _) =>
+Global Hint Extern 5 (AsVal _) => eexists; eapply of_to_val; fast_done : typeclass_instances.
+Global Hint Extern 10 (AsVal _) =>
 eexists; rewrite /IntoVal; eapply of_to_val; rewrite /= !to_of_val /=; solve [ eauto ] : typeclass_instances.
 
 Definition is_atomic (e : expr) : Prop :=
@@ -355,6 +367,6 @@ Ltac solve_atomic :=
   apply is_atomic_correct; simpl; repeat split;
     rewrite ?to_of_val; eapply mk_is_Some; fast_done.
 
-Hint Extern 0 (Atomic _ _) => solve_atomic : core.
-Hint Extern 0 (Atomic _ _) => solve_atomic : typeclass_instances.
-Hint Resolve to_of_val : core.
+Global Hint Extern 0 (Atomic _ _) => solve_atomic : core.
+Global Hint Extern 0 (Atomic _ _) => solve_atomic : typeclass_instances.
+Global Hint Resolve to_of_val : core.

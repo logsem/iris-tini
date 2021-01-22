@@ -310,12 +310,12 @@ Section logrel.
     (∀ vv, Persistent (τi vv)) → env_Persistent_bin Π → env_Persistent_bin (τi :: Π).
   Proof. by constructor. Qed.
 
-  Global Instance ctx_persistent_bin_lookup ρ x v :
+  Global Instance ctx_persistent_bin_lookup Θ ρ x v :
     env_Persistent_bin (proj_bin Θ) → Persistent (ctx_lookup x Θ ρ v).
   Proof.
-    intros HΘ; revert x; induction HΘ=>-[|?] /=; try apply _.
+    revert x; induction Θ as [|?? IHΘ]=>-[|?] /=; try apply _.
     - move=> /(Forall_cons_1 _ _) [? ?] //.
-    - move=> /(Forall_cons_1 _ _) [? ?]. apply IHHΘ => //.
+    - move=> /(Forall_cons_1 _ _) [? ?]. apply IHΘ => //.
   Qed.
 
   Class envs_Persistent (Θ : listO T) :=
@@ -402,13 +402,13 @@ Section logrel.
     rewrite lookup_zip_with; by simplify_option_eq.
   Qed.
 
-  Global Instance interp_env_persistent Γ Θ vs :
+  Global Instance interp_env_persistent Γ Θ ρ vs :
     envs_Persistent Θ →
     Persistent (⟦ Γ ⟧* Θ ρ vs).
   Proof.
     revert vs; induction Γ; intros vs; rewrite /interp_env; first apply _.
-    rewrite /Persistent /=; destruct vs; simpl; first by iIntros "% % [% ?]".
-    iIntros (??) "[% [#Ha HΓ]]".
+    rewrite /Persistent /=; destruct vs; simpl; first by iIntros "% [% ?]".
+    iIntros (?) "[% [#Ha HΓ]]".
     repeat iSplit; eauto.
     rewrite /Persistent /interp_env in IHΓ.
     iDestruct (IHΓ with "[HΓ]") as "[_ $]"; eauto.

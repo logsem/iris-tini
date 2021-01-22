@@ -16,12 +16,14 @@ Section soundness.
   Definition secΣ : gFunctors :=
     #[invΣ; gen_heapΣ loc val; gen_heapΣ loc val].
 
-  Definition SI_init Σ (x : gen_heapG loc val Σ) := gen_heap_ctx (hG := x) ∅.
+  Definition SI_init Σ (x : gen_heapG loc val Σ) := gen_heap_interp (hG := x) ∅.
 
   Instance SI_left_init_data `{!gen_heapPreG loc val Σ} : InitData (SI_init Σ).
-  Proof. apply gen_heap_init. Qed.
+  Proof.
+    rewrite /InitData; iMod gen_heap_init as (?) "(?&?)"; eauto. 
+  Qed.
 
-  Definition SI Σ (x : gen_heapG loc val Σ) (σ : state) := gen_heap_ctx σ.
+  Definition SI Σ (x : gen_heapG loc val Σ) (σ : state) := gen_heap_interp σ.
 
   Theorem soundness_semantic Σ `{lambdasecPreG Σ} e (b1 b2 : bool) (ℓ ℓ' : label)
           (rd  : Reds (e.[# (BoolV b1)/]) ∅)

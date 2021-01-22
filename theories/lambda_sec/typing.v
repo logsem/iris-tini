@@ -40,8 +40,8 @@ Section lambda_sec_typing.
   Scheme subtype_mut := Induction for subtype Sort Prop
     with secsubtype_mut := Induction for secsubtype Sort Prop.
 
-  Hint Constructors subtype : core.
-  Hint Constructors secsubtype : core.
+  Local Hint Constructors subtype : core.
+  Local Hint Constructors secsubtype : core.
 
   Notation "t1 '<:' t2" := (subtype t1 t2) (at level 70).
   Notation "τ1 '<:ₛ' τ2" := (secsubtype τ1 τ2) (at level 70).
@@ -257,6 +257,6 @@ Notation "t1 '<:' t2" := (subtype t1 t2) (at level 70).
 Notation "τ1 '<:ₛ' τ2" := (secsubtype τ1 τ2) (at level 70).
 Notation "Γ # pc ⊢ₜ e : τ" := (typed Γ pc e τ) (at level 74, e, τ at next level).
 
-Hint Constructors typed : core.
-Hint Constructors subtype : core.
-Hint Constructors secsubtype : core.
+Global Hint Constructors typed : core.
+Global Hint Constructors subtype : core.
+Global Hint Constructors secsubtype : core.

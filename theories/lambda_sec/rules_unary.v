@@ -89,18 +89,17 @@ Global Instance pure_fold e `{!AsVal e}:
   PureExec True 1 (Unfold (Fold e)) e.
 Proof. solve_pure_exec. Qed.
 
-Notation "l ↦{ q } v" := (mapsto (L:=loc) (V:=val) l q v%V)
-  (at level 20, q at level 50, format "l  ↦{ q }  v") : bi_scope.
-Notation "l ↦ v" :=
-  (mapsto (L:=loc) (V:=val) l 1 v%V) (at level 20) : bi_scope.
-Notation "l ↦{ q } -" := (∃ v, l ↦{q} v)%I
-  (at level 20, q at level 50, format "l  ↦{ q }  -") : bi_scope.
-Notation "l ↦ -" := (l ↦{1} -)%I (at level 20) : bi_scope.
+Notation "l ↦{ dq } v" := (mapsto (L:=loc) (V:=val) l dq v%V)
+  (at level 20, format "l  ↦{ dq }  v") : bi_scope.
+Notation "l ↦{# q } v" := (mapsto (L:=loc) (V:=val) l (DfracOwn q) v%V)
+  (at level 20, format "l  ↦{# q }  v") : bi_scope.
+Notation "l ↦ v" := (mapsto (L:=loc) (V:=val) l (DfracOwn 1) v%V)
+  (at level 20, format "l  ↦  v") : bi_scope.
 
 Section mwp_lang_lemmas.
   Context `{secG_un Σ}.
 
-  Definition SI (σ : state) : iProp Σ := (gen_heap_ctx σ)%I.
+  Definition SI (σ : state) : iProp Σ := gen_heap_interp σ.
 
   Lemma mwp_fupd_alloc E v Φ :
     {{| ∀ l, l ↦ v -∗ Φ (LocV l) 1 |}}@{mwpd_fupd SI}
@@ -120,7 +119,7 @@ Section mwp_lang_lemmas.
   Qed.
 
   Lemma mwp_fupd_load E l q v Φ :
-    {{| l ↦{q} v ∗ (l ↦{q} v -∗ Φ v 1) |}}@{mwpd_fupd SI}
+    {{| l ↦{#q} v ∗ (l ↦{#q} v -∗ Φ v 1) |}}@{mwpd_fupd SI}
       Load (Loc l) @ E
     {{| w ; n, Φ w n |}}.
   Proof.

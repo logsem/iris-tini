@@ -10,9 +10,9 @@ bug-reports: "https://github.com/logsem/iris-tini/issues"
 build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [
-  "coq" { (= "8.12.0") | (= "dev") }
-  "coq-iris" { (= "dev.2020-10-04.0.a36f8a23") | (= "dev") }
-  "coq-stdpp" { (= "dev.2020-10-02.0.7ae77142") | (= "dev") }  
-  "coq-iris-string-ident" { (= "dev") | (= "dev") }
-  "coq-autosubst" { (= "dev.coq86") | (= "dev") }
+  "coq" { (= "8.13.0") | (= "dev") }
+  "coq-iris" { (= "dev.2021-01-12.0.bbaf3eaf") | (= "dev") }
+  "coq-stdpp" { (= "dev.2021-01-07.1.43aea848") | (= "dev") }
+  "coq-iris-string-ident" { (= "dev")  }
+  "coq-autosubst" { (= "dev") }
 ]

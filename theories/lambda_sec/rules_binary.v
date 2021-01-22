@@ -14,32 +14,30 @@ Class secG Σ := SecG {
 }.
 
 (** left and right heap *)
-Definition mapsto_left `{secG Σ} (l : loc) (q : Qp) (v : val) :=
+Definition mapsto_left `{secG Σ} (l : loc) (q : dfrac) (v : val) :=
   @mapsto loc _ _ val Σ secG_gen_heapG_left l q v.
-Definition mapsto_right `{secG Σ} (l : loc) (q : Qp) (v : val) :=
+Definition mapsto_right `{secG Σ} (l : loc) (q : dfrac) (v : val) :=
   @mapsto loc _ _ val Σ secG_gen_heapG_right l q v.
 
-Definition gen_heap_ctx_left `{secG Σ} (σ : gmap loc val) :=
-  @gen_heap_ctx _ _ _ _ _ secG_gen_heapG_left σ.
+Definition gen_heap_interp_left `{secG Σ} (σ : gmap loc val) :=
+  @gen_heap_interp _ _ _ _ _ secG_gen_heapG_left σ.
 
-Definition gen_heap_ctx_right `{secG Σ} (σ : gmap loc val) :=
-  @gen_heap_ctx _ _ _ _ _ secG_gen_heapG_right σ.
+Definition gen_heap_interp_right `{secG Σ} (σ : gmap loc val) :=
+  @gen_heap_interp _ _ _ _ _ secG_gen_heapG_right σ.
 
-Notation "l ↦ₗ{ q } v" := (mapsto_left l q v%V)
-  (at level 20, q at level 50, format "l  ↦ₗ{ q }  v") : bi_scope.
-Notation "l ↦ₗ v" :=
-  (mapsto_left  l 1 v%V) (at level 20) : bi_scope.
-Notation "l ↦ₗ{ q } -" := (∃ v, l ↦ₗ{q} v)%I
-  (at level 20, q at level 50, format "l  ↦ₗ{ q }  -") : bi_scope.
-Notation "l ↦ₗ -" := (l ↦ₗ{1} -)%I (at level 20) : bi_scope.
+Notation "l ↦ₗ{ dq } v" := (mapsto_left l dq v%V)
+  (at level 20, dq at level 50, format "l  ↦ₗ{ dq }  v") : bi_scope.
+Notation "l ↦ₗ{# q } v" := (mapsto_left l (DfracOwn q) v%V)
+  (at level 20, format "l  ↦ₗ{# q }  v") : bi_scope.
+Notation "l ↦ₗ v" := (mapsto_left  l (DfracOwn 1) v%V)
+  (at level 20) : bi_scope.
 
-Notation "l ↦ᵣ{ q } v" := (mapsto_right l q v%V)
-  (at level 20, q at level 50, format "l  ↦ᵣ{ q }  v") : bi_scope.
+Notation "l ↦ᵣ{ dq } v" := (mapsto_right l dq v%V)
+  (at level 20, dq at level 50, format "l  ↦ᵣ{ dq }  v") : bi_scope.
+Notation "l ↦ᵣ{# q } v" := (mapsto_right l (DfracOwn q) v%V)
+  (at level 20, format "l  ↦ᵣ{# q }  v") : bi_scope.
 Notation "l ↦ᵣ v" :=
-  (mapsto_right l 1 v%V) (at level 20) : bi_scope.
-Notation "l ↦ᵣ{ q } -" := (∃ v, l ↦ᵣ{q} v)%I
-  (at level 20, q at level 50, format "l  ↦ᵣ{ q }  -") : bi_scope.
-Notation "l ↦ᵣ -" := (l ↦ₗ{1} -)%I (at level 20) : bi_scope.
+  (mapsto_right l (DfracOwn 1) v%V) (at level 20) : bi_scope.
 
 (** unary interpretations with left and right heaps *)
 Section left_right.
@@ -97,8 +95,8 @@ Notation "⌊ Γ ᵣ⌋*" := (interp_un_env_right Γ) (at level 0, Γ at level 7
 Section mwp_binary.
   Context `{!secG Σ}.
 
-  Definition SI_left  (σ : state) : iProp Σ := (gen_heap_ctx_left σ)%I.
-  Definition SI_right (σ : state) : iProp Σ := (gen_heap_ctx_right σ)%I.
+  Definition SI_left  (σ : state) : iProp Σ := (gen_heap_interp_left σ)%I.
+  Definition SI_right (σ : state) : iProp Σ := (gen_heap_interp_right σ)%I.
 
   Definition mwp_binary := mwpd_left SI_left SI_right.
   Definition mwp_right := mwpd_right SI_right.

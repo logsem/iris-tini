@@ -1,0 +1,31 @@
+name: CI
+
+# Controls when the action will run:
+# https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#filtering-for-specific-branches-tags-and-paths
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+  - cron: 0 0 1 * * # once a month
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        coq_version:
+          # - dev
+          - '8.13.0'
+      max-parallel: 4
+      # don't cancel all in-progress jobs if one matrix job fails:
+      fail-fast: false
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Build docker image
+      run: docker build --build-arg=coq_image="coqorg/coq:${{matrix.coq_version}}" --pull -t iris-tini .

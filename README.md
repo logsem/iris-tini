@@ -68,13 +68,8 @@ The development can be built using Docker.
 1. Install [Docker](https://docs.docker.com/get-docker/)
 2. Run `make docker-build` to build the Docker image [Dockerfile](Dockerfile) that
    compiles the development using pre-compiled dependencies.
-3. Optionally, you can execute `docker run -i -t iris-tini-compile` to get an
+3. Optionally, you can execute `docker run -i -t iris-tini` to get an
    interactive shell. 
-
-To speed up compilation time, the dependencies have been prepared and compiled
-separately in [Dockerfile.deps](Dockerfile.deps) and published in a Dockerhub
-[repository](https://hub.docker.com/repository/docker/simongregersen/iris-tini). This
-image can be built locally by running `make docker-build-deps` if needed.
 
 ## Documentation
 

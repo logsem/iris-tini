@@ -4,12 +4,12 @@ From mwp.mwp_modalities Require Import mwp_step_fupd.
 From mwp.mwp_modalities.ni_logrel Require Import mwp_left.
 From logrel_ifc.lambda_sec Require Import lattice notation fundamental_binary.
 
-Definition SI Σ (x : gen_heapG loc val Σ) (σ : state) := gen_heap_ctx σ.
+Definition SI Σ (x : gen_heapG loc val Σ) (σ : state) := gen_heap_interp σ.
 
-Definition SI_init σ Σ (x : gen_heapG loc val Σ) := gen_heap_ctx (hG := x) σ.
+Definition SI_init σ Σ (x : gen_heapG loc val Σ) := gen_heap_interp (hG := x) σ.
 
 Instance SI_left_init_data σ `{!gen_heapPreG loc val Σ} : InitData (SI_init σ Σ).
-Proof. apply gen_heap_init. Qed.
+Proof. rewrite /InitData; iMod gen_heap_init as (?) "(?&?)"; eauto. Qed.
 
 Section TP.
   Local Instance tpSecurityLattice : SecurityLattice tplabel := { ζ := L }.

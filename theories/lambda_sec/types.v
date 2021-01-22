@@ -47,7 +47,7 @@ Infix "⊔ₛ" := (LJoin) (at level 50) : stdpp_scope.
 Notation "⊥ₛ" := (LLabel bot) : stdpp_scope.
 Notation "⊤ₛ" := (LLabel top) : stdpp_scope.
 
-Hint Constructors flowsto : core.
+Global Hint Constructors flowsto : core.
 
 Section lambda_sec_types.
   Context `{SecurityLattice label}.
