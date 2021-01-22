@@ -62,9 +62,9 @@ End Order.
 Notation "a ⊑ b" := (order a b) (at level 70) : stdpp_scope.
 Notation "a ⋢ b" := (¬ (order a b)) (at level 70) : stdpp_scope.
 
-Hint Extern 3 => apply ord_bottom : core.
-Hint Extern 6 => rewrite bot_left_id : core.
-Hint Extern 6 => rewrite bot_right_id : core.
+Global Hint Extern 3 => apply ord_bottom : core.
+Global Hint Extern 6 => rewrite bot_left_id : core.
+Global Hint Extern 6 => rewrite bot_right_id : core.
 
 Section Lemmas.
   Context `{lattice : Lattice label}.

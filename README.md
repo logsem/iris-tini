@@ -1,5 +1,5 @@
 # Logical Relations for Termination-Insensitive Noninterference
-[![Build Status](https://travis-ci.com/logsem/iris-tini.svg?branch=master)](https://travis-ci.com/logsem/iris-tini)
+![CI](https://github.com/logsem/iris-tini/workflows/CI/badge.svg)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4068072.svg)](https://doi.org/10.5281/zenodo.4068072)
 
 A mechanized logical relations model for an expressive information-flow control
@@ -38,7 +38,7 @@ repository using the `--recurse-submodules` flag.
 
 The project is known to compile with:
 
-- Coq 8.12.0
+- Coq 8.13.0
 - Development versions of [Iris](https://gitlab.mpi-sws.org/iris/iris/) and
   [std++](https://gitlab.mpi-sws.org/iris/stdpp) as specified in the
   [iris-tini.opam](iris-tini.opam) file
@@ -67,7 +67,7 @@ The development can be built using Docker.
 
 1. Install [Docker](https://docs.docker.com/get-docker/)
 2. Run `make docker-build` to build the Docker image [Dockerfile](Dockerfile) that
-   compiles the development using pre-compiled dependencies.
+   compiles the development.
 3. Optionally, you can execute `docker run -i -t iris-tini` to get an
    interactive shell. 
 
