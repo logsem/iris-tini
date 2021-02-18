@@ -30,7 +30,7 @@ Section related.
     iApply (ic_step_fupd_bind _ (fill [IfCtx _ _])).
     iApply (ic_atomic ((mwpd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
     iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     iModIntro.
     iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hb & _) /=".
     iApply ((@ic_step_fupd_load _ secG_un_left) with "[//]").
@@ -46,7 +46,7 @@ Section related.
     - iApply (ic_step_fupd_pure_step SI_left); [done|]. iModIntro.
       iApply ic_step_fupd_stuck; [done|].
       iIntros (σ) "Hσ /=".
-      iMod (fupd_intro_mask' ⊤ ∅) as "_"; first done.
+      iMod (fupd_mask subseteq ∅) as "_"; first done.
       do 2 iModIntro. iPureIntro.
       apply head_stuck_stuck.
       + split; [done|]. intros ???? Hs. inversion Hs.

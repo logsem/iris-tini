@@ -39,9 +39,8 @@ repository using the `--recurse-submodules` flag.
 The project is known to compile with:
 
 - Coq 8.13.0
-- Development versions of [Iris](https://gitlab.mpi-sws.org/iris/iris/) and
-  [std++](https://gitlab.mpi-sws.org/iris/stdpp) as specified in the
-  [iris-tini.opam](iris-tini.opam) file
+- [Iris](https://gitlab.mpi-sws.org/iris/iris/) 3.4.0
+- [std++](https://gitlab.mpi-sws.org/iris/stdpp) 1.5.0
 - [Autosubst 1](https://github.com/uds-psl/autosubst)
 
 The dependencies can be obtained using opam

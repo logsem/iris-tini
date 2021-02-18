@@ -110,7 +110,7 @@ Section mwp_lang_lemmas.
     iApply mwp_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     iModIntro. iIntros (v' σ2 Hstep); inv_head_step.
     assert (# v' = # (LocV l)) by auto; simplify_eq.
     iMod (@gen_heap_alloc with "Hσ1") as "(Hσ & Hl & _)"; first done.
@@ -127,7 +127,7 @@ Section mwp_lang_lemmas.
     iApply mwp_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     iDestruct (@gen_heap_valid with "Hσ1 Hl") as %?.
     iModIntro. iIntros (v' σ2 Hstep); inv_head_step.
     iMod "Hclose"; iModIntro; iFrame; iModIntro.
@@ -143,7 +143,7 @@ Section mwp_lang_lemmas.
     iApply mwp_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     iModIntro. iIntros (w σ2 Hstep); inv_head_step.
     assert (# w = # UnitV) by auto; simplify_eq.
     iMod (@gen_heap_update with "Hσ1 Hl") as "[$ Hl]".
@@ -160,7 +160,7 @@ Section mwp_lang_lemmas.
     iApply mwp_step_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     do 2 iModIntro. iIntros (v' σ2 Hstep); inv_head_step.
     assert (# v' = # (LocV l)) by auto; simplify_eq.
     iMod (@gen_heap_alloc with "Hσ1") as "(Hσ & Hl & _)"; first done.
@@ -177,7 +177,7 @@ Section mwp_lang_lemmas.
     iApply mwp_step_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     do 2 iModIntro.
     iDestruct (@gen_heap_valid with "Hσ1 Hl") as %?.
     iIntros (v' σ2 Hstep); inv_head_step.
@@ -194,7 +194,7 @@ Section mwp_lang_lemmas.
     iApply mwp_step_fupd_lift_atomic_head_step'; auto.
     { intros []; inversion 1; eauto. }
     iIntros (σ1) "Hσ1".
-    iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+    iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
     do 2 iModIntro. iIntros (w σ2 Hstep); inv_head_step.
     assert (# w = # UnitV) by auto; simplify_eq.
     iMod (@gen_heap_update with "Hσ1 Hl") as "[$ Hl]".

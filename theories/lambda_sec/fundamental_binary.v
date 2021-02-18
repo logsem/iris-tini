@@ -818,7 +818,7 @@ Section fundamental.
       iApply (mwp_atomic ((mwpd_step_fupd SI_left)) _ StronglyAtomic _ ∅).
       iMod ("H1" with "[]") as "[Hl1 HcloseI1]"; first solve_ndisj.
       iDestruct "Hl1" as (w1) "[Hl1 #Hw1]".
-      iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+      iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
       iModIntro.
       iApply ((@mwp_step_fupd_store _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
@@ -830,7 +830,7 @@ Section fundamental.
       iApply (mwp_atomic ((mwpd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
       iMod ("H2" with "[]") as "[Hl2 HcloseI2]"; first solve_ndisj.
       iDestruct "Hl2" as (w2) "[Hl2 #Hw2]".
-      iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+      iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
       iModIntro.
       iApply ((@mwp_step_fupd_store _ secG_un_right) with "[//]").
       iFrame. iIntros "!> Hl2".
@@ -856,7 +856,7 @@ Section fundamental.
       iApply (mwp_double_atomic_lr _ _ StronglyAtomic).
       iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
       iDestruct "Hl" as (v1 v2) "(Hl1 & Hl2 & #Hτ) /=".
-      iMod fupd_intro_mask' as "Hclose"; first set_solver.
+      iMod fupd_mask_subseteq as "Hclose"; first set_solver.
       iModIntro.
       iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
       iFrame. iIntros "!> Hl1".
@@ -876,7 +876,7 @@ Section fundamental.
       case_bool_decide.
       + iMod ("H1" with "[]") as "Hl1"; first solve_ndisj.
         iDestruct "Hl1" as (w1) "[[Hl1 #Hw1] HcloseI1]".
-        iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+        iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
         iModIntro.
         iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
         iFrame. iIntros "!> Hl1".
@@ -886,7 +886,7 @@ Section fundamental.
         iApply (mwp_atomic ((mwpd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
         iMod ("H2" with "[]") as "Hl2"; first solve_ndisj.
         iDestruct "Hl2" as (w2) "[[Hl2 #Hw2] HcloseI2]".
-        iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+        iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
         iModIntro.
         iApply ((@mwp_step_fupd_load _ secG_un_right) with "[//]").
         iFrame. iIntros "!> Hl2".
@@ -898,7 +898,7 @@ Section fundamental.
         by eapply ord_neg_left.
       + iMod ("H1" with "[]") as "[Hl1 HcloseI1]"; first solve_ndisj.
         iDestruct "Hl1" as (w1) "[Hl1 #Hw1]".
-        iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+        iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
         iModIntro.
         iApply ((@mwp_step_fupd_load _ secG_un_left) with "[//]").
         iFrame. iIntros "!> Hl1".
@@ -908,7 +908,7 @@ Section fundamental.
         iApply (mwp_atomic ((mwpd_step_fupd SI_right)) _ StronglyAtomic _ ∅).
         iMod ("H2" with "[]") as "[Hl2 HcloseI2]"; first solve_ndisj.
         iDestruct "Hl2" as (w2) "[Hl2 #Hw2]".
-        iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+        iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
         iModIntro.
         iApply ((@mwp_step_fupd_load _ secG_un_right) with "[//]").
         iFrame. iIntros "!> Hl2".

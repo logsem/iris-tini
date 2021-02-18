@@ -69,7 +69,7 @@ Section related.
     iApply ni_logrel_fupd_ni_logrel. iSplit.
     { iLeft. iIntros (σ) "Hσ".
       iInv (nroot.@(l1,l2)) as "Hl" "HcloseI".
-      iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+      iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
       iDestruct "Hl" as (??) "(>Hl1 & >Hl2 & _) /=".
       iDestruct (gen_heap_valid with "Hσ Hl1") as "%H".
       iModIntro. iPureIntro.

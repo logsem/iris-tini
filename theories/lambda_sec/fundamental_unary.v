@@ -361,7 +361,7 @@ Section fundamental.
     - iApply (mwp_atomic ((mwpd_step_fupd SI)) _ StronglyAtomic _ ∅).
       iMod ("Hv" with "[]") as "Hl"; first solve_ndisj.
       iDestruct "Hl" as (w) "[[Hl #Hw] Hclose]".
-      iMod (fupd_intro_mask' _ ∅) as "Hclose'"; first set_solver.
+      iMod (fupd_mask_subseteq ∅) as "Hclose'"; first set_solver.
       iModIntro.
       iApply (mwp_step_fupd_load with "[//]").
       iFrame. iIntros "!> Hl". iMod "Hclose'" as "_".
@@ -370,7 +370,7 @@ Section fundamental.
     - iApply (mwp_atomic ((mwpd_step_fupd SI)) _ StronglyAtomic _ ∅).
       iMod ("Hv" with "[]") as "Hl"; first solve_ndisj.
       iDestruct "Hl" as "[Hl Hclose]". iDestruct "Hl" as (w) "[Hl #?]".
-      iMod (fupd_intro_mask' _ ∅) as "Hclose'"; first set_solver.
+      iMod (fupd_mask_subseteq ∅) as "Hclose'"; first set_solver.
       iModIntro.
       iApply (mwp_step_fupd_load with "[//]").
       iFrame. iNext. iIntros "Hl". iMod "Hclose'" as "_".

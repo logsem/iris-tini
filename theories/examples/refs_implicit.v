@@ -54,7 +54,7 @@ Section related.
     do 2 iModIntro.
     iApply ni_logrel_fupd_ni_logrel. iSplit.
     { iLeft. iIntros (σ) "Hσ".
-      iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+      iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
       iModIntro. iPureIntro.
       eapply (fill_reducible [SeqCtx _]).
       apply head_prim_reducible.
